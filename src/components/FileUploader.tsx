@@ -4,13 +4,13 @@ import { ResultType } from "../types";
 import { Loader2, UploadCloud, FileText } from "lucide-react";
 
 interface Props {
-    onResults: (data: ResultType[]) => void;
+    onResult: (data: ResultType) => void;
     sessionId: string;
 }
 
 const allowedExtensions = [".pdf", ".docx", ".txt"];
 
-export const FileUploader: React.FC<Props> = ({ onResults, sessionId }) => {
+export const FileUploader: React.FC<Props> = ({ onResult, sessionId }) => {
     const [file, setFile] = useState<File | null>(null);
     const [jobTitle, setJobTitle] = useState("");
     const [jobDescription, setJobDescription] = useState("");
@@ -56,7 +56,8 @@ export const FileUploader: React.FC<Props> = ({ onResults, sessionId }) => {
             await api.post("/analyze", payload);
             setStatus("✅ Analysis Done. Getting result...");
             const res = await api.get(`/results/${sessionId}`);
-            onResults(res.data);
+
+            onResult(res.data);
             setStatus("✅ Analysis complete.");
 
             // Clear form
@@ -65,22 +66,37 @@ export const FileUploader: React.FC<Props> = ({ onResults, sessionId }) => {
             setJobDescription("");
 
         } catch (err: any) {
-            console.error(err);
+            // console.error("Upload error:", err.response?.data);
 
-            if (err.response?.status === 429 && err.response?.data?.error === "rate_limit_exceeded") {
-                setStatus(`⚠️ ${err.response.data.message} Showing your last result...`);
+            const data = err.response?.data;
+
+            if (err.response?.status === 429 && data?.error === "rate_limit_exceeded") {
+                const retryMsg = data.message || "Rate limit exceeded.";
+                const retryIn = data.retry_in_minutes ? ` Please wait about ${Math.ceil(data.retry_in_minutes)} minutes.` : "";
+
+                setStatus(`⚠️ ${retryMsg}${retryIn}\nFetching your last result...`);
 
                 try {
                     const res = await api.get(`/results/${sessionId}`);
-                    onResults(res.data);
+                    onResult(res.data[0]);
                     setStatus("✅ Showing your last result from previous analysis.");
+                    // Clear form
+                    setFile(null);
+                    setJobTitle("");
+                    setJobDescription("");
                 } catch (resultErr: any) {
-                    console.error(resultErr);
-                    setStatus(`❌ Could not fetch previous result: ${resultErr.response?.data?.detail || "Something went wrong."}`);
+                    // console.error("Error fetching last result:", resultErr.response?.data);
+                    setStatus(
+                        `❌ Could not fetch your last result: ${resultErr.response?.data?.detail || resultErr.message || "Something went wrong."
+                        }`
+                    );
                 }
 
             } else {
-                setStatus(`❌ Error: ${err.response?.data?.detail || "Something went wrong."}`);
+                // Handle any other type of error (like missing file, network issue, etc.)
+                const fallbackError =
+                    data?.detail || data?.error || data?.message || "Something went wrong.";
+                setStatus(`❌ Error: ${fallbackError}`);
             }
         } finally {
             setLoading(false);

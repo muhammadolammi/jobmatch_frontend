@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { FileUploader } from "./components/FileUploader";
-import { ResultsView } from "./components/ResultsView";
+import { ResultView } from "./components/ResultsView";
 import { ResultType } from "./types";
 import './index.css';
 
 function App() {
   const [sessionId, setSessionId] = useState<string>("");
-  const [results, setResults] = useState<ResultType[]>([]);
+  const [result, setResult] = useState<ResultType | null>(null);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function App() {
         if (!data.ip) throw new Error("No IP found in response");
         setSessionId(data.ip);
       } catch (err) {
-        console.error("Failed to get IP:", err);
+        // console.error("Failed to get IP:", err);
         setError("Unable to detect your IP address. Please check your connection or disable VPN.");
       }
     };
@@ -63,8 +63,8 @@ function App() {
         </p>
       </div>
 
-      <FileUploader onResults={setResults} sessionId={sessionId} />
-      <ResultsView results={results} />
+      <FileUploader onResult={setResult} sessionId={sessionId} />
+      <ResultView result={result} />
     </div>
   );
 }

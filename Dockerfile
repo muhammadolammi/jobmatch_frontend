@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim
 
 WORKDIR /app
-COPY frontend .
+COPY build .
 EXPOSE 8081
 CMD ["./frontend"]

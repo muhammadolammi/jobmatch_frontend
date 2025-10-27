@@ -53,7 +53,9 @@ export const FileUploader: React.FC<Props> = ({ onResults, sessionId }) => {
                 session_id: sessionId,
             };
 
-            const res = await api.post("/analyze", payload);
+            await api.post("/analyze", payload);
+            setStatus("✅ Analysis Done. Getting result...");
+            const res = await api.get(`/results/${sessionId}`);
             onResults(res.data);
             setStatus("✅ Analysis complete.");
 
@@ -64,7 +66,22 @@ export const FileUploader: React.FC<Props> = ({ onResults, sessionId }) => {
 
         } catch (err: any) {
             console.error(err);
-            setStatus(`❌ Error: ${err.response?.data?.detail || "Something went wrong."}`);
+
+            if (err.response?.status === 429 && err.response?.data?.error === "rate_limit_exceeded") {
+                setStatus(`⚠️ ${err.response.data.message} Showing your last result...`);
+
+                try {
+                    const res = await api.get(`/results/${sessionId}`);
+                    onResults(res.data);
+                    setStatus("✅ Showing your last result from previous analysis.");
+                } catch (resultErr: any) {
+                    console.error(resultErr);
+                    setStatus(`❌ Could not fetch previous result: ${resultErr.response?.data?.detail || "Something went wrong."}`);
+                }
+
+            } else {
+                setStatus(`❌ Error: ${err.response?.data?.detail || "Something went wrong."}`);
+            }
         } finally {
             setLoading(false);
         }

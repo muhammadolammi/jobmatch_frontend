@@ -42,9 +42,9 @@ export const ResultView: React.FC<Props> = ({ result }) => {
         );
     }
 
-    const isRecommended = !result.recommendation
-        .toLowerCase()
-        .includes("not recommended");
+    const isRecommended = result.recommendation
+        ? !result.recommendation.toLowerCase().includes("not recommended")
+        : false;
 
     return (
         <div className="mt-12 max-w-4xl mx-auto px-4">

@@ -57,7 +57,8 @@ export const FileUploader: React.FC<Props> = ({ onResult, sessionId }) => {
             setStatus("✅ Analysis Done. Getting result...");
             const res = await api.get(`/results/${sessionId}`);
 
-            onResult(res.data);
+            onResult(res.data[0]);
+            // console.log(res.data[0])
             setStatus("✅ Analysis complete.");
 
             // Clear form
@@ -79,6 +80,7 @@ export const FileUploader: React.FC<Props> = ({ onResult, sessionId }) => {
                 try {
                     const res = await api.get(`/results/${sessionId}`);
                     onResult(res.data[0]);
+                    // console.log(res.data[0])
                     setStatus("✅ Showing your last result from previous analysis.");
                     // Clear form
                     setFile(null);

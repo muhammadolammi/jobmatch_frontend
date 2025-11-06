@@ -13,3 +13,16 @@ api.interceptors.request.use((config) => {
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
 });
+
+api.interceptors.response.use(
+    (response) => response, // just return successful responses
+    (error) => {
+        if (error.response && error.response.status === 401) {
+            // 🔒 Token expired or unauthorized → redirect to login
+            localStorage.removeItem("access_token"); // optional: clear token
+            window.location.href = "/login"; // adjust path if your login route differs
+        }
+
+        return Promise.reject(error);
+    }
+);

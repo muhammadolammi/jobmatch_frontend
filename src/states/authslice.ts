@@ -53,6 +53,7 @@ export const loginUser = createAsyncThunk(
             localStorage.setItem("access_token", data.access_token);
             return data;
         } catch (err: any) {
+            console.log(err)
             return rejectWithValue(err.response?.data?.error || "Invalid credentials");
         }
     }
@@ -87,6 +88,7 @@ export const fetchCurrentUser = createAsyncThunk(
         } catch (err: any) {
             localStorage.removeItem("access_token");
             // // Redirect immediately to login if invalid session
+            //  window.location.href = "/login";
             return rejectWithValue("Unable to validate user session");
         }
     }

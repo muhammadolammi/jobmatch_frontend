@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { api } from "../api/client";
 import { ResultType } from "../types";
 import { Loader2, UploadCloud, FileText } from "lucide-react";
+import { handleUpload } from "../helpers/fileupload";
 
 interface Props {
     onResult: (data: ResultType) => void;
@@ -9,7 +9,6 @@ interface Props {
     allowMultiple?: boolean; // ✅ new optional prop
 }
 
-const allowedExtensions = [".pdf", ".docx", ".txt"];
 
 export const FileUploader: React.FC<Props> = ({
     onResult,
@@ -22,93 +21,6 @@ export const FileUploader: React.FC<Props> = ({
     const [status, setStatus] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleUpload = async () => {
-        if (!files || files.length === 0) {
-            setStatus("⚠️ Please select at least one file.");
-            return;
-        }
-        if (!jobTitle || !jobDescription) {
-            setStatus("⚠️ Please fill out the job title and description.");
-            return;
-        }
-
-        // ✅ Validate all files
-        for (let i = 0; i < files.length; i++) {
-            const ext = files[i].name.slice(files[i].name.lastIndexOf(".")).toLowerCase();
-            if (!allowedExtensions.includes(ext)) {
-                setStatus(`❌ Invalid file type: ${files[i].name}`);
-                return;
-            }
-        }
-
-        setLoading(true);
-        setStatus("Uploading resume(s)...");
-
-        const formData = new FormData();
-        formData.append("session_id", sessionId);
-        for (let i = 0; i < files.length; i++) {
-            formData.append("file", files[i]);
-        }
-
-        try {
-            await api.post("/upload", formData, {
-                headers: { "Content-Type": "multipart/form-data" },
-            });
-
-            setStatus("✅ Upload complete. Running analysis...");
-
-            const payload = {
-                job_title: jobTitle,
-                job_description: jobDescription,
-                session_id: sessionId,
-            };
-
-            await api.post("/analyze", payload);
-            setStatus("✅ Analysis Done. Getting result...");
-
-            const res = await api.get(`/results/${sessionId}`);
-            onResult(res.data[0]);
-            setStatus("✅ Analysis complete.");
-
-            // Clear form
-            setFiles(null);
-            setJobTitle("");
-            setJobDescription("");
-        } catch (err: any) {
-            const data = err.response?.data;
-
-            if (err.response?.status === 429 && data?.error === "rate_limit_exceeded") {
-                const retryMsg = data.message || "Rate limit exceeded.";
-                const retryIn = data.retry_in_minutes
-                    ? ` Please wait about ${Math.ceil(data.retry_in_minutes)} minutes.`
-                    : "";
-
-                setStatus(`⚠️ ${retryMsg}${retryIn}\nFetching your last result...`);
-
-                try {
-                    const res = await api.get(`/results/${sessionId}`);
-                    onResult(res.data[0]);
-                    setStatus("✅ Showing your last result from previous analysis.");
-                    setFiles(null);
-                    setJobTitle("");
-                    setJobDescription("");
-                } catch (resultErr: any) {
-                    setStatus(
-                        `❌ Could not fetch your last result: ${resultErr.response?.data?.detail ||
-                        resultErr.message ||
-                        "Something went wrong."
-                        }`
-                    );
-                }
-            } else {
-                const fallbackError =
-                    data?.detail || data?.error || data?.message || "Something went wrong.";
-                setStatus(`❌ Error: ${fallbackError} `);
-            }
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-2xl mx-auto">
@@ -208,7 +120,19 @@ export const FileUploader: React.FC<Props> = ({
                 {/* Upload Button */}
                 <div>
                     <button
-                        onClick={handleUpload}
+                        onClick={() => {
+                            handleUpload({
+                                onResult: onResult,
+                                sessionId: sessionId,
+                                files: files,
+                                setStatus: setStatus,
+                                jobTitle: jobTitle,
+                                jobDescription: jobDescription,
+                                setLoading: setLoading,
+
+
+                            })
+                        }}
                         disabled={loading}
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                     >

@@ -1,71 +1,76 @@
-import React, { useState, useEffect } from "react";
-import { FileUploader } from "./components/FileUploader";
-import { ResultView } from "./components/ResultsView";
-import { ResultType } from "./types";
-import './index.css';
+import React, { useEffect, useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./features/auth/LoginPage";
+import RegisterPage from "./features/auth/RegisterPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import MainLayout from "./layouts/MainLayout";
+import { useAppSelector, useAppDispatch } from "./app/hooks";
+import { selectIsAuthenticated, fetchCurrentUser } from "./states/authslice";
+import DashboardPage from "./features/analyzer/DashboardPage";
+import SessionPage from "./features/analyzer/SessionPage";
 
 function App() {
-  const [sessionId, setSessionId] = useState<string>("");
-  const [result, setResult] = useState<ResultType | null>(null);
-  const [error, setError] = useState<string>("");
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(true);
 
+  // ✅ Fetch the current user session when the app loads
   useEffect(() => {
-    const fetchIp = async () => {
-      try {
-        const res = await fetch("https://api.ipify.org?format=json");
-        if (!res.ok) throw new Error("Failed to reach IP service");
-        const data = await res.json();
+    dispatch(fetchCurrentUser())
+    setLoading(false)
 
-        if (!data.ip) throw new Error("No IP found in response");
-        setSessionId(data.ip);
-      } catch (err) {
-        // console.error("Failed to get IP:", err);
-        setError("Unable to detect your IP address. Please check your connection or disable VPN.");
-      }
-    };
 
-    fetchIp();
-  }, []);
+  }, [dispatch]);
 
-  if (error) {
+  // Optional: simple loading screen
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 text-center">
-        <div className="max-w-md bg-white p-6 rounded-2xl shadow-md">
-          <h2 className="text-2xl font-semibold text-red-600 mb-4">Connection Error</h2>
-          <p className="text-gray-700 mb-6">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!sessionId) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 text-gray-600">
-        <p>Detecting your IP address...</p>
+      <div className="flex items-center justify-center h-screen text-gray-600">
+        Loading user session...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4">
-      <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-blue-700 mb-2">
-          Job Match AI
-        </h1>
-        <p className="text-gray-600">
-          Upload candidate resumes and get detailed AI analysis
-        </p>
-      </div>
+    <Routes>
+      {/* Protected Routes */}
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <DashboardPage />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
 
-      <FileUploader onResult={setResult} sessionId={sessionId} />
-      <ResultView result={result} />
-    </div>
+      <Route
+        path="/session/:id"
+        element={
+          <ProtectedRoute>
+            <MainLayout>
+              <SessionPage />
+            </MainLayout>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+      {/* Public Routes */}
+      <Route
+        path="/login"
+        element={!isAuthenticated ? <LoginPage /> : <Navigate to="/dashboard" replace />}
+      />
+      <Route
+        path="/register"
+        element={!isAuthenticated ? <RegisterPage /> : <Navigate to="/dashboard" replace />}
+      />
+
+      {/* 404 Fallback */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 

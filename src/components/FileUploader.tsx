@@ -6,20 +6,25 @@ import { Loader2, UploadCloud, FileText } from "lucide-react";
 interface Props {
     onResult: (data: ResultType) => void;
     sessionId: string;
+    allowMultiple?: boolean; // ✅ new optional prop
 }
 
 const allowedExtensions = [".pdf", ".docx", ".txt"];
 
-export const FileUploader: React.FC<Props> = ({ onResult, sessionId }) => {
-    const [file, setFile] = useState<File | null>(null);
+export const FileUploader: React.FC<Props> = ({
+    onResult,
+    sessionId,
+    allowMultiple = false, // ✅ default: single file (for job seeker)
+}) => {
+    const [files, setFiles] = useState<FileList | null>(null);
     const [jobTitle, setJobTitle] = useState("");
     const [jobDescription, setJobDescription] = useState("");
     const [status, setStatus] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleUpload = async () => {
-        if (!file) {
-            setStatus("⚠️ Please select a file.");
+        if (!files || files.length === 0) {
+            setStatus("⚠️ Please select at least one file.");
             return;
         }
         if (!jobTitle || !jobDescription) {
@@ -27,18 +32,23 @@ export const FileUploader: React.FC<Props> = ({ onResult, sessionId }) => {
             return;
         }
 
-        const ext = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
-        if (!allowedExtensions.includes(ext)) {
-            setStatus(`❌ Invalid file type: ${file.name}`);
-            return;
+        // ✅ Validate all files
+        for (let i = 0; i < files.length; i++) {
+            const ext = files[i].name.slice(files[i].name.lastIndexOf(".")).toLowerCase();
+            if (!allowedExtensions.includes(ext)) {
+                setStatus(`❌ Invalid file type: ${files[i].name}`);
+                return;
+            }
         }
 
         setLoading(true);
-        setStatus("Uploading resume...");
+        setStatus("Uploading resume(s)...");
 
         const formData = new FormData();
         formData.append("session_id", sessionId);
-        formData.append("file", file);
+        for (let i = 0; i < files.length; i++) {
+            formData.append("file", files[i]);
+        }
 
         try {
             await api.post("/upload", formData, {
@@ -55,50 +65,45 @@ export const FileUploader: React.FC<Props> = ({ onResult, sessionId }) => {
 
             await api.post("/analyze", payload);
             setStatus("✅ Analysis Done. Getting result...");
-            const res = await api.get(`/results/${sessionId}`);
 
+            const res = await api.get(`/results/${sessionId}`);
             onResult(res.data[0]);
-            // console.log(res.data[0])
             setStatus("✅ Analysis complete.");
 
             // Clear form
-            setFile(null);
+            setFiles(null);
             setJobTitle("");
             setJobDescription("");
-
         } catch (err: any) {
-            // console.error("Upload error:", err.response?.data);
-
             const data = err.response?.data;
 
             if (err.response?.status === 429 && data?.error === "rate_limit_exceeded") {
                 const retryMsg = data.message || "Rate limit exceeded.";
-                const retryIn = data.retry_in_minutes ? ` Please wait about ${Math.ceil(data.retry_in_minutes)} minutes.` : "";
+                const retryIn = data.retry_in_minutes
+                    ? ` Please wait about ${Math.ceil(data.retry_in_minutes)} minutes.`
+                    : "";
 
                 setStatus(`⚠️ ${retryMsg}${retryIn}\nFetching your last result...`);
 
                 try {
                     const res = await api.get(`/results/${sessionId}`);
                     onResult(res.data[0]);
-                    // console.log(res.data[0])
                     setStatus("✅ Showing your last result from previous analysis.");
-                    // Clear form
-                    setFile(null);
+                    setFiles(null);
                     setJobTitle("");
                     setJobDescription("");
                 } catch (resultErr: any) {
-                    // console.error("Error fetching last result:", resultErr.response?.data);
                     setStatus(
-                        `❌ Could not fetch your last result: ${resultErr.response?.data?.detail || resultErr.message || "Something went wrong."
+                        `❌ Could not fetch your last result: ${resultErr.response?.data?.detail ||
+                        resultErr.message ||
+                        "Something went wrong."
                         }`
                     );
                 }
-
             } else {
-                // Handle any other type of error (like missing file, network issue, etc.)
                 const fallbackError =
                     data?.detail || data?.error || data?.message || "Something went wrong.";
-                setStatus(`❌ Error: ${fallbackError}`);
+                setStatus(`❌ Error: ${fallbackError} `);
             }
         } finally {
             setLoading(false);
@@ -107,13 +112,17 @@ export const FileUploader: React.FC<Props> = ({ onResult, sessionId }) => {
 
     return (
         <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-2xl mx-auto">
-            <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">AI Resume Analyzer</h2>
+            <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+                AI Resume Analyzer
+            </h2>
 
             <div className="space-y-6">
                 {/* Job Inputs */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Job Title
+                        </label>
                         <input
                             type="text"
                             value={jobTitle}
@@ -123,7 +132,9 @@ export const FileUploader: React.FC<Props> = ({ onResult, sessionId }) => {
                         />
                     </div>
                     <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Job Description</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Job Description
+                        </label>
                         <textarea
                             value={jobDescription}
                             onChange={(e) => setJobDescription(e.target.value)}
@@ -136,7 +147,9 @@ export const FileUploader: React.FC<Props> = ({ onResult, sessionId }) => {
 
                 {/* File Input */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Resume</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                        {allowMultiple ? "Resumes (multiple)" : "Resume"}
+                    </label>
                     <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-lg">
                         <div className="space-y-1 text-center">
                             <UploadCloud className="mx-auto h-12 w-12 text-gray-400" />
@@ -145,36 +158,46 @@ export const FileUploader: React.FC<Props> = ({ onResult, sessionId }) => {
                                     htmlFor="file-upload"
                                     className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
                                 >
-                                    <span>Click to upload file</span>
+                                    <span>{allowMultiple ? "Upload resumes" : "Upload resume"}</span>
                                     <input
                                         id="file-upload"
                                         type="file"
                                         accept=".pdf,.docx,.txt"
+                                        multiple={allowMultiple} // ✅ dynamically allows multiple uploads
                                         className="sr-only"
-                                        onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
+                                        onChange={(e) => setFiles(e.target.files)}
                                     />
                                 </label>
                                 <p className="pl-1">or drag and drop</p>
                             </div>
-                            <p className="text-xs text-gray-500">.pdf, .docx, .txt up to 10MB</p>
+                            <p className="text-xs text-gray-500">
+                                {allowMultiple
+                                    ? "Upload multiple .pdf, .docx, .txt files (up to 10MB each)"
+                                    : ".pdf, .docx, .txt up to 10MB"}
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                {/* Selected File */}
-                {file && (
+                {/* Selected Files */}
+                {files && files.length > 0 && (
                     <div className="space-y-2">
-                        <h4 className="text-sm font-medium text-gray-600">Selected File:</h4>
+                        <h4 className="text-sm font-medium text-gray-600">Selected File(s):</h4>
                         <ul className="border border-gray-200 rounded-lg divide-y divide-gray-200">
-                            <li className="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-                                <div className="w-0 flex-1 flex items-center">
-                                    <FileText className="flex-shrink-0 h-5 w-5 text-gray-400" />
-                                    <span className="ml-2 flex-1 w-0 truncate">{file.name}</span>
-                                </div>
-                            </li>
+                            {Array.from(files).map((file) => (
+                                <li
+                                    key={file.name}
+                                    className="pl-3 pr-4 py-3 flex items-center justify-between text-sm"
+                                >
+                                    <div className="w-0 flex-1 flex items-center">
+                                        <FileText className="flex-shrink-0 h-5 w-5 text-gray-400" />
+                                        <span className="ml-2 flex-1 w-0 truncate">{file.name}</span>
+                                    </div>
+                                </li>
+                            ))}
                         </ul>
                         <button
-                            onClick={() => setFile(null)}
+                            onClick={() => setFiles(null)}
                             className="text-xs text-gray-500 hover:text-red-600 transition"
                         >
                             Clear selection
@@ -193,6 +216,8 @@ export const FileUploader: React.FC<Props> = ({ onResult, sessionId }) => {
                             <>
                                 <Loader2 className="animate-spin mr-2 h-5 w-5" /> Processing...
                             </>
+                        ) : allowMultiple ? (
+                            "Analyze All Resumes"
                         ) : (
                             "Analyze Resume"
                         )}

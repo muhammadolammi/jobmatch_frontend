@@ -19,6 +19,7 @@ export const SessionCard = ({ session }: { session: Session }) => {
         const source = new EventSource(`/api/sessions/${session.id}/updates`, {
             withCredentials: true,
         });
+        // 
         source.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("SSE update:", data);

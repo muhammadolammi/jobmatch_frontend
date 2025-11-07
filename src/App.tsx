@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "./features/auth/LoginPage";
-import RegisterPage from "./features/auth/RegisterPage";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
 import { selectIsAuthenticated, fetchCurrentUser } from "./states/authslice";
-import DashboardPage from "./features/analyzer/DashboardPage";
-import SessionPage from "./features/analyzer/SessionPage";
+import DashboardPage from "./pages/DashboardPage";
+import SessionPage from "./pages/SessionPage";
 
 function App() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);

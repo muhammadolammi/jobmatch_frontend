@@ -1,13 +1,12 @@
 import { api } from "../api/client";
 import { ResultType } from "../types";
+import { analyzeResume } from "./analyse";
 
 interface Props {
     onResult: (data: ResultType) => void;
     sessionId: string;
     files: FileList | null,
     setStatus: React.Dispatch<React.SetStateAction<string>>,
-    jobTitle: string,
-    jobDescription: string,
     setLoading: React.Dispatch<React.SetStateAction<boolean>>,
 }
 const uploadFileToR2 = async (
@@ -71,12 +70,11 @@ export const handleUpload = async (prop: Props) => {
         // Continue your analysis flow after uploads
         prop.setStatus("✅ Upload complete. Running analysis...");
 
-        const payload = {
-            job_title: prop.jobTitle,
-            job_description: prop.jobDescription,
-            session_id: prop.sessionId,
-        };
-        await api.post("/analyze", payload);
+        // const payload = {
+        //     session_id: prop.sessionId,
+        // };
+        // await api.post("/analyze", payload);
+        analyzeResume(prop.sessionId)
 
         const res = await api.get(`/results/${prop.sessionId}`);
         prop.onResult(res.data[0]);

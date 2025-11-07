@@ -1,4 +1,5 @@
 export interface ResultType {
+    id: string
     candidate_email: string;
     match_score: number;
     relevant_experience: string[];
@@ -6,4 +7,7 @@ export interface ResultType {
     missing_skills: string[];
     summary: string;
     recommendation: string;
+    // Error result entry
+    is_error_result: boolean;
+    error: string;
 }

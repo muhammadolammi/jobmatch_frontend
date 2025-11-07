@@ -5,7 +5,16 @@ export const getSessions = async () => {
     return res.data;
 };
 
-export const createSession = async (name: string) => {
-    const res = await api.post("/sessions", { name });
+interface CreateSessionProps {
+    name: string,
+    job_title: string,
+    job_description: string
+}
+export async function createSession({
+    name,
+    job_title,
+    job_description,
+}: CreateSessionProps) {
+    const res = await api.post("/sessions", { name, job_title, job_description });
     return res.data;
 };

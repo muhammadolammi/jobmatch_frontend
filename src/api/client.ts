@@ -1,11 +1,13 @@
 import axios from "axios";
+export const API_BASE_URL = process.env.REACT_APP_BASE_URL + "/api";
+export const API_KEY = process.env.REACT_APP_API_KEY
 
 // console.log(process.env.REACT_APP_BASE_URL)
 export const api = axios.create({
-    baseURL: process.env.REACT_APP_BASE_URL + "/api",
+    baseURL: API_BASE_URL,
     withCredentials: false,
     headers: {
-        "client-api-key": process.env.REACT_APP_API_KEY
+        "client-api-key": API_KEY
     },
 });
 api.interceptors.request.use((config) => {

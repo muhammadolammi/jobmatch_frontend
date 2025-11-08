@@ -1,9 +1,35 @@
 export interface ResultType {
+    id?: string;
     candidate_email: string;
     match_score: number;
-    relevant_experience: string[];
+    relevant_experiences: string[]; // ✅ plural
     relevant_skills: string[];
     missing_skills: string[];
     summary: string;
     recommendation: string;
+    is_error_result: boolean;
+    error?: string;
+}
+
+export interface Session {
+    id: string;
+    name: string;
+    created_at: string;
+    status: "pending" | "completed" | "failed";
+    user_id: string;
+}
+
+// --- TYPES ---
+export interface User {
+    id?: string;
+    email?: string;
+    role?: "employer" | "job_seeker" | "admin" | null;
+}
+
+export interface AuthState {
+    user: User | null;
+    accessToken: string | null;
+    isAuthenticated: boolean;
+    loading: boolean;
+    error: string | null;
 }

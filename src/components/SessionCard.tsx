@@ -1,7 +1,6 @@
 import { Calendar, RotateCcw } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Session } from "../types";
-import React, { useEffect, useState } from "react";
 import { analyzeResume } from "../helpers/analyse";
 import { useSessionUpdates } from "../hooks/useSessionUpdates";
 // import { useSessionUpdates } from "../hooks/useSessionUpdates";

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { ResultType } from "../types";
 import { Loader2, UploadCloud, FileText, RotateCcw } from "lucide-react";
 import { handleUpload } from "../helpers/fileupload";
 import { analyzeResume } from "../helpers/analyse";

@@ -45,9 +45,6 @@ export const ResultView: React.FC<Props> = ({ result }) => {
         );
     }
 
-    const isRecommended = result.recommendation
-        ? !result.recommendation.toLowerCase().includes("not recommended")
-        : false;
 
     return (
         <div className="mt-12 max-w-4xl mx-auto px-4">
@@ -146,15 +143,19 @@ export const ResultView: React.FC<Props> = ({ result }) => {
                             Recommendation
                         </h4>
                         <div
-                            className={`p-5 rounded-xl flex items-center ${isRecommended
-                                ? "bg-green-50 text-green-700"
-                                : "bg-red-50 text-red-700"
+                            className={`p-5 rounded-xl flex items-center ${result.match_score < 45
+                                ? "bg-red-50 text-red-700"
+                                : result.match_score < 70
+                                    ? "bg-yellow-50 text-yellow-700"
+                                    : "bg-green-50 text-green-700"
                                 }`}
                         >
-                            {isRecommended ? (
-                                <ThumbsUp className="h-5 w-5 mr-3 flex-shrink-0" />
-                            ) : (
+                            {result.match_score < 45 ? (
                                 <ThumbsDown className="h-5 w-5 mr-3 flex-shrink-0" />
+                            ) : result.match_score < 70 ? (
+                                <ClipboardList className="h-5 w-5 mr-3 flex-shrink-0" />
+                            ) : (
+                                <ThumbsUp className="h-5 w-5 mr-3 flex-shrink-0" />
                             )}
                             <p className="text-sm font-medium">{result.recommendation}</p>
                         </div>

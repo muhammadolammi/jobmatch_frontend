@@ -69,7 +69,9 @@ export const refreshToken = createAsyncThunk(
             localStorage.setItem("access_token", data.access_token);
             return data;
         } catch (err: any) {
-            return rejectWithValue("Failed to refresh token. Please login again.");
+            // return rejectWithValue("Failed to refresh token. Please login again.");
+            return rejectWithValue("");
+
         }
     }
 );

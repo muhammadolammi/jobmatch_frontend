@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Loader2, Mail, Lock, User, Building, Briefcase, Globe, Users } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { registerUser, selectAuth } from "../../states/authslice";
 
@@ -20,7 +20,7 @@ const RegisterPage: React.FC = () => {
     });
     const [status, setStatus] = useState('');
     const dispatch = useAppDispatch();
-    const { loading, error } = useAppSelector(selectAuth);
+    const { loading } = useAppSelector(selectAuth);
     const navigate = useNavigate();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

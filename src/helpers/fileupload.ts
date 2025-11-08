@@ -1,5 +1,4 @@
 import { api } from "../api/client";
-import { ResultType } from "../types";
 import { analyzeResume } from "./analyse";
 
 interface Props {

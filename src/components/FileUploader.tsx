@@ -5,13 +5,11 @@ import { handleUpload } from "../helpers/fileupload";
 import { analyzeResume } from "../helpers/analyse";
 
 interface Props {
-    onResult: (data: ResultType) => void;
     sessionId: string;
     allowMultiple?: boolean; // ✅ optional
 }
 
 export const FileUploader: React.FC<Props> = ({
-    onResult,
     sessionId,
     allowMultiple = false,
 }) => {
@@ -103,7 +101,7 @@ export const FileUploader: React.FC<Props> = ({
                 <button
                     onClick={() =>
                         handleUpload({
-                            onResult,
+
                             sessionId,
                             files,
                             setStatus,

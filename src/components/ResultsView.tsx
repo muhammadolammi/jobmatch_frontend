@@ -125,8 +125,8 @@ export const ResultView: React.FC<Props> = ({ result }) => {
                             Relevant Experience
                         </h4>
                         <ul className="list-disc list-inside space-y-1 text-sm text-gray-600">
-                            {result.relevant_experience.length > 0 ? (
-                                result.relevant_experience.map((exp, i) => (
+                            {result.relevant_experiences.length > 0 ? (
+                                result.relevant_experiences.map((exp, i) => (
                                     <li key={i}>{exp}</li>
                                 ))
                             ) : (

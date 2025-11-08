@@ -1,9 +1,9 @@
 import { Calendar, RotateCcw } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Session } from "../types/Session";
+import { Session } from "../types";
 import React, { useEffect, useState } from "react";
-import { api, API_BASE_URL } from "../api/client";
 import { analyzeResume } from "../helpers/analyse";
+// import { useSessionUpdates } from "../hooks/useSessionUpdates";
 
 export const SessionCard = ({ session }: { session: Session }) => {
     const navigate = useNavigate();
@@ -12,7 +12,7 @@ export const SessionCard = ({ session }: { session: Session }) => {
     const [status, setStatus] = useState(session.status || "idle");
 
 
-    // ✅ Listen for live updates per session
+    // ✅ Listen for live updates per session 
     useEffect(() => {
         if (!session) return;
 

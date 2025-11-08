@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Session } from "../types/Session";
+import { Session } from "../types";
 import { getSessions } from "../api/sessions";
 import { SessionCard } from "./SessionCard";
 

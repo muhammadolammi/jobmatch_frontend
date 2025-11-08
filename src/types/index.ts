@@ -1,13 +1,20 @@
 export interface ResultType {
-    id: string
+    id?: string;
     candidate_email: string;
     match_score: number;
-    relevant_experience: string[];
+    relevant_experiences: string[]; // ✅ plural
     relevant_skills: string[];
     missing_skills: string[];
     summary: string;
     recommendation: string;
-    // Error result entry
     is_error_result: boolean;
-    error: string;
+    error?: string;
+}
+
+export interface Session {
+    id: string;
+    name: string;
+    created_at: string;
+    status: "pending" | "completed" | "failed";
+    user_id: string;
 }

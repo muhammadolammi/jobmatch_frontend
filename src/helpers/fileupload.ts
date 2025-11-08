@@ -3,7 +3,6 @@ import { ResultType } from "../types";
 import { analyzeResume } from "./analyse";
 
 interface Props {
-    onResult: (data: ResultType) => void;
     sessionId: string;
     files: FileList | null,
     setStatus: React.Dispatch<React.SetStateAction<string>>,
@@ -76,8 +75,6 @@ export const handleUpload = async (prop: Props) => {
         // await api.post("/analyze", payload);
         analyzeResume(prop.sessionId)
 
-        const res = await api.get(`/results/${prop.sessionId}`);
-        prop.onResult(res.data[0]);
         prop.setStatus("✅ Analysis complete.");
     } catch (err: any) {
         prop.setStatus("❌ Upload failed: " + (err.message || "Unknown error"));

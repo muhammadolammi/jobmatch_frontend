@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FileUploader } from "../components/FileUploader";
 import { ResultView } from "../components/ResultsView";
-import { EmptyResult, EmptySession, ResultType } from "../types";
+import { EmptySession, ResultType } from "../types";
 import { useAppSelector } from "../app/hooks";
 import { selectCurrentUser } from "../states/authslice";
 import { api } from "../api/client";

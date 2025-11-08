@@ -89,7 +89,9 @@ export const fetchCurrentUser = createAsyncThunk(
             localStorage.removeItem("access_token");
             // // Redirect immediately to login if invalid session
             //  window.location.href = "/login";
-            return rejectWithValue("Unable to validate user session");
+            // return rejectWithValue("Unable to validate user session");
+            return rejectWithValue("");
+
         }
     }
 );

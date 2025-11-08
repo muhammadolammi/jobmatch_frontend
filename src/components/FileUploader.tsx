@@ -101,7 +101,6 @@ export const FileUploader: React.FC<Props> = ({
                 <button
                     onClick={() =>
                         handleUpload({
-
                             sessionId,
                             files,
                             setStatus,

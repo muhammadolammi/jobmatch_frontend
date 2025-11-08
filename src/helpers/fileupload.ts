@@ -75,7 +75,7 @@ export const handleUpload = async (prop: Props) => {
         // await api.post("/analyze", payload);
         analyzeResume(prop.sessionId)
 
-        prop.setStatus("✅ Analysis complete.");
+        prop.setStatus("✅ Analysis queud.");
     } catch (err: any) {
         prop.setStatus("❌ Upload failed: " + (err.message || "Unknown error"));
     } finally {

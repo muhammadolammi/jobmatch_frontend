@@ -18,3 +18,18 @@ export interface Session {
     status: "pending" | "completed" | "failed";
     user_id: string;
 }
+
+// --- TYPES ---
+export interface User {
+    id?: string;
+    email?: string;
+    role?: "employer" | "job_seeker" | "admin" | null;
+}
+
+export interface AuthState {
+    user: User | null;
+    accessToken: string | null;
+    isAuthenticated: boolean;
+    loading: boolean;
+    error: string | null;
+}

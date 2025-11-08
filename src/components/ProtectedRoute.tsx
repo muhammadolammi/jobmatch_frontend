@@ -10,11 +10,10 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
     const isAuthenticated = useAppSelector(selectIsAuthenticated);
-
     if (!isAuthenticated) {
-        // If not logged in, redirect to login page
         return <Navigate to="/login" replace />;
     }
+
 
     // Otherwise, render the protected content
     return <>{children}</>;

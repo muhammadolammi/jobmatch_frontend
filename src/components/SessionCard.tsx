@@ -3,35 +3,34 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Session } from "../types";
 import React, { useEffect, useState } from "react";
 import { analyzeResume } from "../helpers/analyse";
+import { useSessionUpdates } from "../hooks/useSessionUpdates";
 // import { useSessionUpdates } from "../hooks/useSessionUpdates";
 
 export const SessionCard = ({ session }: { session: Session }) => {
     const navigate = useNavigate();
     const handleClick = () => navigate(`/session/${session.id}`);
     // const { id: sessionId } = useParams<{ id: string }>();
-    const [status, setStatus] = useState(session.status || "idle");
-
-
+    // const [status, setStatus] = useState(session.status || "idle");
+    const status = useSessionUpdates(session)
     // ✅ Listen for live updates per session 
-    useEffect(() => {
-        if (!session) return;
+    // useEffect(() => {
+    //     if (!session) return;
+    //     const source = new EventSource(`/api/sessions/${session.id}/updates`, {
+    //         withCredentials: true,
+    //     });
+    //     // 
+    //     source.onmessage = (event) => {
+    //         const data = JSON.parse(event.data);
+    //         console.log("SSE update:", data);
+    //         setStatus(data.status || "unknown");
 
-        const source = new EventSource(`/api/sessions/${session.id}/updates`, {
-            withCredentials: true,
-        });
-        // 
-        source.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log("SSE update:", data);
-            setStatus(data.status || "unknown");
-
-            if (["completed", "failed"].includes(data.status)) {
-                source.close();
-            }
-        };
-        source.onerror = () => source.close();
-        return () => source.close();
-    }, [session.id]);
+    //         if (["completed", "failed"].includes(data.status)) {
+    //             source.close();
+    //         }
+    //     };
+    //     source.onerror = () => source.close();
+    //     return () => source.close();
+    // }, [session.id]);
 
     return (
         <div

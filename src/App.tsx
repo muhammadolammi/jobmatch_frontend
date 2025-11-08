@@ -5,7 +5,7 @@ import RegisterPage from "./pages/auth/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
-import { selectIsAuthenticated, fetchCurrentUser } from "./states/authslice";
+import { selectIsAuthenticated, fetchCurrentUser, refreshToken } from "./states/authslice";
 import DashboardPage from "./pages/DashboardPage";
 import SessionPage from "./pages/SessionPage";
 
@@ -13,14 +13,29 @@ function App() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
-
-  // ✅ Fetch the current user session when the app loads
   useEffect(() => {
-    dispatch(fetchCurrentUser())
-    setLoading(false)
+    const token = localStorage.getItem("access_token");
 
+    const initializeUser = async () => {
+      if (token) {
+        try {
+          await dispatch(fetchCurrentUser()).unwrap();
+        } catch {
+          try {
+            await dispatch(refreshToken()).unwrap();
+            await dispatch(fetchCurrentUser()).unwrap();
+          } catch {
+            console.log("User must login again");
+          }
+        }
+      }
+      setLoading(false);
+    };
 
+    initializeUser();
   }, [dispatch]);
+
+
 
   // Optional: simple loading screen
   if (loading) {
@@ -56,7 +71,11 @@ function App() {
         }
       />
 
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={
+        <ProtectedRoute>
+          <Navigate to="/dashboard" replace />
+        </ProtectedRoute>
+      } />
 
       {/* Public Routes */}
       <Route

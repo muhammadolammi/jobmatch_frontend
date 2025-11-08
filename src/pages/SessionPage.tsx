@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FileUploader } from "../components/FileUploader";
 import { ResultView } from "../components/ResultsView";
@@ -8,89 +8,108 @@ import { selectCurrentUser } from "../states/authslice";
 import { api } from "../api/client";
 import { Session } from "../types";
 import { getSession } from "../api/sessions";
+import { useSessionUpdates } from "../hooks/useSessionUpdates";
 
 export default function SessionPage() {
     const { id: sessionId } = useParams<{ id: string }>();
+    const [session, setSession] = useState<Session | null>(null);
     const [results, setResults] = useState<ResultType[] | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [session, setSession] = useState<Session | null>();
+    const [loadingSession, setLoadingSession] = useState(false);
+    const [loadingResults, setLoadingResults] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const user = useAppSelector(selectCurrentUser);
     const isHR = user?.role === "employer";
-    const [status, setStatus] = useState("idle");
 
-    // ✅ Listen for live updates per session 
-    useEffect(() => {
-        if (!session) return;
-
-        const source = new EventSource(`/api/sessions/${session.id}/updates`, {
-            withCredentials: true,
-        });
-        // 
-        source.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log("SSE update:", data);
-            setStatus(data.status || "unknown");
-
-            if (["completed", "failed"].includes(data.status)) {
-                source.close();
-            }
-        };
-        source.onerror = () => source.close();
-        return () => source.close();
-    }, [sessionId]);
+    const status = useSessionUpdates(session);
 
     const handleResult = (data: ResultType | ResultType[]) => {
-        if (Array.isArray(data)) {
-            setResults(data);
-        } else {
-            setResults([data]);
-        }
+        setResults(Array.isArray(data) ? data : [data]);
     };
-    async function fetchResult() {
-        try {
-            setLoading(true);
-            const response = await api.get(`/results/${sessionId}`);
-            handleResult(response.data.results);
-            console.log("✅ Results fetched after completion");
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    async function fetchSession() {
-        try {
-            setLoading(true);
-            const sessionRes = await getSession(sessionId!);
-            setSession(sessionRes);
-        } catch (error) {
-            console.error("Error fetching session:", error);
-        } finally {
-            setLoading(false);
-        }
-    }
 
     useEffect(() => {
         if (!sessionId) return;
-        fetchResult()
+        let mounted = true;
 
-        fetchSession();
+        (async () => {
+            setError(null);
+            setLoadingSession(true);
+            try {
+                const s = await getSession(sessionId);
+                if (!mounted) return;
+                setSession(s);
+            } catch (err: any) {
+                console.error("fetch session failed", err);
+                if (mounted) setError("Failed to load session.");
+            } finally {
+                if (mounted) setLoadingSession(false);
+            }
+        })();
+
+        return () => {
+            mounted = false;
+        };
     }, [sessionId]);
 
-    // ✅ Run this when status becomes completed
     useEffect(() => {
         if (!sessionId) return;
-        if (status !== "completed") return; // only when done
-        fetchResult();
-    }, [sessionId, status]);
+        let mounted = true;
 
+        const fetchResults = async () => {
+            setError(null);
+            setLoadingResults(true);
+            try {
+                const resp = await api.get(`/results/${sessionId}`);
+                if (!mounted) return;
+                handleResult(resp.data?.results ?? []);
+            } catch (err) {
+                console.error("fetch results error", err);
+                if (mounted) setError("Failed to load analysis results.");
+            } finally {
+                if (mounted) setLoadingResults(false);
+            }
+        };
+
+        if (session?.status === "completed" || status === "completed") {
+            fetchResults();
+        }
+
+        return () => {
+            mounted = false;
+        };
+    }, [sessionId, session?.status, status]);
+
+    const isGenerating = status && !["completed", "failed", "idle"].includes(status);
+    const showLoading = loadingSession || loadingResults;
+
+    const content = useMemo(() => {
+        if (showLoading) return <div className="text-center text-gray-500 animate-pulse">Loading analysis...</div>;
+        if (error) return <div className="text-center text-red-600">{error}</div>;
+        if (!results || results.length === 0)
+            return <div className="text-center text-gray-500 mt-8">No analysis results yet. Upload or rerun analysis to begin.</div>;
+
+        if (isHR) {
+            return (
+                <div className="flex flex-wrap -mx-2">
+                    {results.map((res, i) => (
+                        <ResultView key={res.id ?? i} result={res} />
+                    ))}
+                </div>
+            );
+        }
+
+        return (
+            <div className="space-y-6">
+                {results.map((res, i) => (
+                    <ResultView key={res.id ?? i} result={res} />
+                ))}
+            </div>
+        );
+    }, [results, showLoading, error, isHR]);
 
     return (
         <div className="min-h-screen bg-gray-100 py-10 px-4">
-
-            <div className="max-w-4xl mx-auto mb-10">
+            <div className="max-w-4xl mx-auto mb-6">
                 <h1 className="text-3xl font-bold text-blue-700 mb-2">
                     {isHR ? "Candidate Resume Analysis" : "Resume Fit Analysis"}
                 </h1>
@@ -101,61 +120,30 @@ export default function SessionPage() {
                 </p>
             </div>
 
-            {/* ✅ Upload component */}
-            <FileUploader sessionId={sessionId || ""} allowMultiple={isHR} />
+            <div className="max-w-4xl mx-auto">
+                <FileUploader sessionId={sessionId || ""} allowMultiple={isHR} />
 
-            {/* ✅ Results section */}
-            <div className="max-w-4xl mx-auto mt-12 space-y-8">
-                {loading ? (
-                    <div className="text-center text-gray-500 animate-pulse">
-                        Loading analysis results...
-                    </div>
-                ) : results && results.length > 0 ? (
-                    results.map((res, i) => (
-                        <div
-                            key={res.id || i}
-                            className={`p-6 rounded-xl border shadow-sm transition ${res.is_error_result
-                                ? "bg-red-50 border-red-300"
-                                : "bg-white hover:shadow-md"
-                                }`}
-                        >
-                            {isHR && (
-                                <div className="mb-3 border-b border-gray-200 pb-2">
-                                    <h3 className="text-lg font-semibold text-gray-800">
-                                        Candidate {i + 1}: {res.candidate_email || "Unnamed"}
-                                    </h3>
-                                </div>
-                            )}
-
-                            {/* ✅ Error Result */}
-                            {res.is_error_result ? (
-                                <div>
-                                    <p className="text-red-700 font-semibold">
-                                        Error generating analysis:
-                                    </p>
-                                    <p className="text-red-600 mt-1">
-                                        {res.error || "Unknown error occurred."}
-                                    </p>
-                                </div>
-                            ) : (
-                                <ResultView result={res} />
-                            )}
-                            {status !== "completed" && (
-                                <div className="text-center text-sm text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-md py-2 mt-4">
-                                    {status === "failed"
-                                        ? "Analysis failed. Please retry."
-                                        : "Generating analysis... this may take a few seconds."}
-                                </div>
-                            )}
+                <div className="mt-6">
+                    {status === "failed" && (
+                        <div className="rounded-md bg-red-50 border border-red-200 p-3 text-red-700">
+                            Analysis failed. You can retry the analysis or re-upload resumes.
                         </div>
+                    )}
+                    {isGenerating && (
+                        <div className="rounded-md bg-yellow-50 border border-yellow-200 p-3 text-yellow-700">
+                            Generating analysis — this may take a few seconds. (Status: {status})
+                        </div>
+                    )}
+                    {status === "completed" && (
+                        <div className="rounded-md bg-green-50 border border-green-200 p-3 text-green-700">
+                            Analysis complete.
+                        </div>
+                    )}
+                </div>
 
-                    ))
-                ) : (
-                    <div className="text-center text-gray-500 mt-8">
-                        No analysis results yet. Upload or rerun analysis to begin.
-                    </div>
-                )}
             </div>
+            <div className="mt-6">{content}</div>
+
         </div>
     );
 }

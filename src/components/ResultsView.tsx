@@ -44,8 +44,17 @@ export const ResultView: React.FC<Props> = ({ result }) => {
             </div>
         );
     }
-
-
+    // --- Handle error result ---
+    if (result.is_error_result) {
+        return (
+            <div className="mt-12 max-w-4xl mx-auto px-4">
+                <div className="bg-red-50 text-red-700 border border-red-200 rounded-xl p-6 text-center">
+                    <p className="font-semibold text-lg">Analysis Error</p>
+                    <p className="mt-2 text-sm">{result.error || "Unknown error occurred."}</p>
+                </div>
+            </div>
+        );
+    }
     return (
         <div className="mt-12 max-w-4xl mx-auto px-4">
             {/* --- Header --- */}

@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Session } from "../types";
 
-export function useSessionUpdates(session: Session | null) {
+export function useSessionUpdates(session: Session) {
     const [status, setStatus] = useState<string>(session?.status || "idle");
     const sourceRef = useRef<EventSource | null>(null);
 
@@ -16,7 +16,11 @@ export function useSessionUpdates(session: Session | null) {
             sourceRef.current = null;
         }
 
-        const url = `/api/sessions/${session.id}/updates`;
+        const API_BASE_URL = process.env.REACT_APP_BASE_URL;
+        // const url = `${API_BASE_URL}/api/sessions/${session.id}/updates`;
+        const access_token = localStorage.getItem("access_token")
+        const url = `${API_BASE_URL}/api/sessions/sse/${session.id}/updates?access_token=${access_token}`;
+
         const source = new EventSource(url, { withCredentials: true });
         sourceRef.current = source;
 

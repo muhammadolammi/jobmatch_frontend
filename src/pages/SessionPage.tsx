@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FileUploader } from "../components/FileUploader";
 import { ResultView } from "../components/ResultsView";
-import { ResultType } from "../types";
+import { EmptyResult, EmptySession, ResultType } from "../types";
 import { useAppSelector } from "../app/hooks";
 import { selectCurrentUser } from "../states/authslice";
 import { api } from "../api/client";
@@ -12,19 +12,21 @@ import { useSessionUpdates } from "../hooks/useSessionUpdates";
 
 export default function SessionPage() {
     const { id: sessionId } = useParams<{ id: string }>();
-    const [session, setSession] = useState<Session | null>(null);
+    const [session, setSession] = useState<Session>(EmptySession);
     const [results, setResults] = useState<ResultType[] | null>(null);
     const [loadingSession, setLoadingSession] = useState(false);
     const [loadingResults, setLoadingResults] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string>("");
+    const [isGenerating, setIsGenerating] = useState<boolean>(false);
+
 
     const user = useAppSelector(selectCurrentUser);
     const isHR = user?.role === "employer";
 
     const status = useSessionUpdates(session);
-
     const handleResult = (data: ResultType | ResultType[]) => {
         setResults(Array.isArray(data) ? data : [data]);
+
     };
 
     useEffect(() => {
@@ -32,7 +34,7 @@ export default function SessionPage() {
         let mounted = true;
 
         (async () => {
-            setError(null);
+            setError("");
             setLoadingSession(true);
             try {
                 const s = await getSession(sessionId);
@@ -56,7 +58,7 @@ export default function SessionPage() {
         let mounted = true;
 
         const fetchResults = async () => {
-            setError(null);
+            setError("");
             setLoadingResults(true);
             try {
                 const resp = await api.get(`/results/${sessionId}`);
@@ -70,8 +72,11 @@ export default function SessionPage() {
             }
         };
 
-        if (session?.status === "completed" || status === "completed") {
+        if (session?.status === "completed" || status === "completed" || status === "failed" || session?.status === "failed") {
             fetchResults();
+            setIsGenerating(false)
+        } else {
+            setIsGenerating(true)
         }
 
         return () => {
@@ -79,13 +84,13 @@ export default function SessionPage() {
         };
     }, [sessionId, session?.status, status]);
 
-    const isGenerating = status && !["completed", "failed", "idle"].includes(status);
     const showLoading = loadingSession || loadingResults;
 
     const content = useMemo(() => {
         if (showLoading) return <div className="text-center text-gray-500 animate-pulse">Loading analysis...</div>;
         if (error) return <div className="text-center text-red-600">{error}</div>;
-        if (!results || results.length === 0)
+
+        if (!results || results!.length === 0)
             return <div className="text-center text-gray-500 mt-8">No analysis results yet. Upload or rerun analysis to begin.</div>;
 
         if (isHR) {

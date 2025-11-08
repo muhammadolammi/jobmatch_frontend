@@ -1,35 +1,73 @@
+// ------------------- TYPES -------------------
+
 export interface ResultType {
-    id?: string;
+    id: string;
     candidate_email: string;
     match_score: number;
-    relevant_experiences: string[]; // ✅ plural
+    relevant_experiences: string[]; // never null
     relevant_skills: string[];
     missing_skills: string[];
     summary: string;
     recommendation: string;
     is_error_result: boolean;
-    error?: string;
+    error: string; // empty string if no error
 }
 
 export interface Session {
     id: string;
     name: string;
     created_at: string;
-    status: "pending" | "completed" | "failed";
+    status: "pending" | "completed" | "failed" | "processing";
     user_id: string;
 }
 
-// --- TYPES ---
 export interface User {
-    id?: string;
-    email?: string;
-    role?: "employer" | "job_seeker" | "admin" | null;
+    id: string;
+    email: string;
+    role: "employer" | "job_seeker" | "admin" | "none"; // default to "none"
 }
 
 export interface AuthState {
-    user: User | null;
-    accessToken: string | null;
+    user: User;
+    accessToken: string;
     isAuthenticated: boolean;
     loading: boolean;
-    error: string | null;
+    error: string;
 }
+
+// ------------------- EMPTY VERSIONS -------------------
+
+export const EmptyResult: ResultType = {
+    id: "",
+    candidate_email: "",
+    match_score: 0,
+    relevant_experiences: [],
+    relevant_skills: [],
+    missing_skills: [],
+    summary: "",
+    recommendation: "",
+    is_error_result: false,
+    error: "",
+};
+
+export const EmptySession: Session = {
+    id: "",
+    name: "",
+    created_at: "",
+    status: "pending",
+    user_id: "",
+};
+
+export const EmptyUser: User = {
+    id: "",
+    email: "",
+    role: "none",
+};
+
+export const EmptyAuthState: AuthState = {
+    user: EmptyUser,
+    accessToken: "",
+    isAuthenticated: false,
+    loading: false,
+    error: "",
+};

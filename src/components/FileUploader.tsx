@@ -21,9 +21,17 @@ export const FileUploader: React.FC<Props> = ({
             setRerunning(true);
             await analyzeResume(sessionId);
             setStatus("✅ Analysis re-queued successfully!");
-        } catch (err) {
-            console.error(err);
-            setStatus("❌ Failed to rerun analysis — maybe no resumes uploaded yet?");
+        } catch (err: any) {
+            const remaining = err.response.data?.remaining_seconds;
+            const message = err.response.data?.message || "Too many requests. Try again later.";
+
+            if (remaining) {
+                const hours = Math.floor(remaining / 3600);
+                const minutes = Math.floor((remaining % 3600) / 60);
+                alert(`⏳ ${message}\nYou can try again in ${hours}h ${minutes}m.`);
+            } else {
+                alert(message);
+            }
         } finally {
             setRerunning(false);
         }

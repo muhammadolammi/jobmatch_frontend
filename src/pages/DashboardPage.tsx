@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAppSelector } from "../app/hooks";
 import { selectCurrentUser } from "../states/authslice";
 import { createSession } from "../api/sessions";
+import { getUserSubscription, UserSubscription } from "../api/subscriptions"; // Import the API we made
 import { SessionList } from "../components/SessionList";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, CreditCard, Loader2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 function HRDashboardSection() {
     return (
@@ -29,10 +31,31 @@ function JobSeekerDashboardSection() {
 
 export default function DashboardPage() {
     const user = useAppSelector(selectCurrentUser);
+    
+    // Session States
     const [creating, setCreating] = useState(false);
     const [title, setTitle] = useState("");
     const [jobTitle, setJobTitle] = useState("");
     const [jobDescription, setJobDescription] = useState("");
+
+    // Subscription State (To handle the Upgrade Button logic)
+    const [subscription, setSubscription] = useState<UserSubscription | null>(null);
+    const [loadingSub, setLoadingSub] = useState(true);
+
+    // Fetch Subscription on Mount
+    useEffect(() => {
+        const fetchSub = async () => {
+            try {
+                const sub = await getUserSubscription();
+                setSubscription(sub);
+            } catch (error) {
+                console.error("Failed to check subscription", error);
+            } finally {
+                setLoadingSub(false);
+            }
+        };
+        fetchSub();
+    }, []);
 
     const handleCreate = async () => {
         if (!title.trim() || !jobTitle.trim() || !jobDescription.trim()) {
@@ -55,17 +78,37 @@ export default function DashboardPage() {
     const isHR = user?.role === "employer";
     const isJobSeeker = user?.role === "job_seeker";
 
+    // Logic: Is the user on a paid plan?
+    const isPaidPlan = subscription?.Status === "active" && subscription?.PlanID !== null;
+
     return (
         <div className="min-h-screen bg-gray-50 py-10 px-4">
             <div className="max-w-5xl mx-auto">
                 {/* Header */}
-                <header className="mb-10">
-                    <h1 className="text-3xl font-bold text-gray-800">
-                        Welcome back, <span className="text-blue-700">{user?.email}</span>
-                    </h1>
-                    <p className="text-gray-600 mt-1">
-                        Manage your sessions or create a new analysis below.
-                    </p>
+                <header className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h1 className="text-3xl font-bold text-gray-800">
+                            Welcome back, <span className="text-blue-700">{user?.email}</span>
+                        </h1>
+                        <p className="text-gray-600 mt-1">
+                            Manage your sessions or create a new analysis below.
+                        </p>
+                    </div>
+
+                    {/* Subscription Button */}
+                    {!loadingSub && (
+                        <Link
+                            to="/pricing"
+                            className={`inline-flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium transition-colors ${
+                                isPaidPlan 
+                                    ? "bg-white text-gray-700 border-gray-300 hover:bg-gray-50" // Neutral style for "Manage"
+                                    : "text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 border-transparent" // CTA style for "Upgrade"
+                            }`}
+                        >
+                            <CreditCard className="mr-2 h-4 w-4" />
+                            {isPaidPlan ? "Manage Subscription" : "Upgrade Plan"}
+                        </Link>
+                    )}
                 </header>
 
                 {/* Role Section */}
@@ -124,8 +167,9 @@ export default function DashboardPage() {
                         <button
                             onClick={handleCreate}
                             disabled={creating}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition disabled:opacity-50"
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition disabled:opacity-50 flex items-center"
                         >
+                            {creating && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
                             {creating ? "Creating..." : "Create Session"}
                         </button>
                     </div>

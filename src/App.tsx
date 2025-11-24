@@ -1,18 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import React, { JSX, useEffect, useState } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MainLayout from "./layouts/MainLayout";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
-import { selectIsAuthenticated, fetchCurrentUser, refreshToken } from "./states/authslice";
+import { selectIsAuthenticated, fetchCurrentUser, refreshToken, selectCurrentUser } from "./states/authslice";
 import DashboardPage from "./pages/DashboardPage";
 import SessionPage from "./pages/SessionPage";
+import PricingPage from "./pages/PricingPage";
+import AdminSettingsPage from "./pages/AdminSettingsPage";
 
 function App() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
+      const navigate = useNavigate();
+
   useEffect(() => {
     const token = localStorage.getItem("access_token");
 
@@ -45,6 +49,16 @@ function App() {
       </div>
     );
   }
+  // A simple Guard Component
+const AdminRoute = ({ children }: { children: JSX.Element }) => {
+    const user = useAppSelector(selectCurrentUser);
+    if (user?.role !== "admin") {
+         return <Navigate to="/dashboard" replace />
+
+        // return <div className="p-10 text-center text-red-600">Access Denied: Admins Only</div>;
+    }
+    return children;
+};
 
   return (
     <Routes>
@@ -70,6 +84,26 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route path="/pricing" element={<ProtectedRoute>
+            <MainLayout>
+              <PricingPage />
+            </MainLayout>
+          </ProtectedRoute>} />
+
+      <Route 
+        path="/admin/settings" 
+        element={          <ProtectedRoute>   <MainLayout>  
+           <AdminRoute>
+                <AdminSettingsPage />
+            </AdminRoute>
+              </MainLayout>        </ProtectedRoute>} />
+
+
+                      
+ 
+           
+        
+      
 
       <Route path="/" element={
         <ProtectedRoute>

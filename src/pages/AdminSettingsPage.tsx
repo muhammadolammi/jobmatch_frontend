@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getPlans, Plan } from "../api/subscriptions";
 import { createNewPlan, updatePlanUrl } from "../api/admin";
-import { Loader2, Save, Plus, Link as LinkIcon } from "lucide-react";
+import { Loader2, Save, Plus, Link as LinkIcon, ArrowLeft } from "lucide-react";
 
 export default function AdminSettingsPage() {
     const [plans, setPlans] = useState<Plan[]>([]);
@@ -72,7 +72,13 @@ export default function AdminSettingsPage() {
     return (
         <div className="min-h-screen bg-gray-50 py-10 px-4">
             <div className="max-w-6xl mx-auto">
+                    <div className="mb-16">
+                    <a href="/dashboard" className="inline-flex items-center text-gray-600 hover:text-blue-600 transition mb-8 font-medium">
+                        <ArrowLeft className="h-5 w-5 mr-2" /> Back to Dashboard
+                    </a>
+                    </div>
                 <h1 className="text-3xl font-bold text-gray-800 mb-8">Admin Configuration</h1>
+                
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     
@@ -137,7 +143,7 @@ export default function AdminSettingsPage() {
                                         <p className="text-sm text-gray-500">{plan.plan_code}</p>
                                     </div>
                                     <div className="text-right">
-                                        <span className="block font-mono font-semibold">₦{(plan.amount ).toLocaleString()}</span>
+                                        <span className="block font-mono font-semibold">₦{(plan.amount/100 ).toLocaleString()}</span>
                                         <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                                             Limit: {plan.daily_limit}
                                         </span>

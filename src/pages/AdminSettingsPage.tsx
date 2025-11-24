@@ -104,7 +104,6 @@ export default function AdminSettingsPage() {
                                         onChange={e => setNewPlan({...newPlan, amount: parseInt(e.target.value)})}
                                         placeholder="e.g. 5000 for 5k NGN"
                                     />
-                                    <p className="text-xs text-gray-500 mt-1">5000 NGN = 500000</p>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700">Daily API Limit</label>

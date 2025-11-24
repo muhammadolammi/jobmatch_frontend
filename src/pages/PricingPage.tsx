@@ -95,7 +95,7 @@ export default function PricingPage() {
                         const isFreeTierMatch = (userSub?.PlanID === null || userSub?.Status === "free") && plan.amount === 0;
                         const isCurrentPlan = isPlanIdMatch || isFreeTierMatch;
                         const isPro = plan.name.toLowerCase().includes("pro") || plan.name.toLowerCase().includes("premium");
-                        const displayPrice = plan.amount === 0 ? "Free" : `₦${(plan.amount ).toLocaleString()}`; 
+                        const displayPrice = plan.amount === 0 ? "Free" : `₦${(plan.amount/100 ).toLocaleString()}`; 
 
                         return (
                             // Add a div wrapper to handle scaling or layout specific tweaks

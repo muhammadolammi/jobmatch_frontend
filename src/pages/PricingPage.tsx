@@ -12,16 +12,12 @@ export default function PricingPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch both in parallel for speed
                 const [plansData, subData] = await Promise.all([
                     getPlans(),
                     getUserSubscription()
                 ]);
 
-                // FIX: Defensive coding if API returns null/undefined
                 const safePlans = Array.isArray(plansData) ? plansData : [];
-                
-                // Sort plans: Free (0 cost) first, then ascending price
                 const sortedPlans = safePlans.sort((a, b) => a.amount - b.amount);
                 
                 setPlans(sortedPlans);
@@ -53,12 +49,7 @@ export default function PricingPage() {
 
     if (loading) return <div className="flex justify-center items-center h-screen"><Loader2 className="animate-spin h-10 w-10 text-blue-600" /></div>;
 
-    // --- LAYOUT LOGIC ---
-    // If we have 2 plans, we want a max-width of 4xl and 2 columns.
-    // If we have 3 plans, we want a max-width of 7xl and 3 columns.
     const containerWidth = plans.length <= 2 ? "max-w-5xl" : "max-w-7xl";
-    
-    // Dynamic grid cols based on number of plans
     const gridCols = plans.length === 1 
         ? "grid-cols-1 max-w-md mx-auto" 
         : plans.length === 2 
@@ -66,11 +57,9 @@ export default function PricingPage() {
             : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
 
     return (
-        // Increased vertical padding (py-20) and horizontal padding
         <div className="min-h-screen bg-gray-50 py-20 px-6 sm:px-8 lg:px-12">
             <div className={`${containerWidth} mx-auto transition-all duration-300`}>
                 
-                {/* Header Section */}
                 <div className="mb-16">
                     <a href="/dashboard" className="inline-flex items-center text-gray-600 hover:text-blue-600 transition mb-8 font-medium">
                         <ArrowLeft className="h-5 w-5 mr-2" /> Back to Dashboard
@@ -86,19 +75,33 @@ export default function PricingPage() {
                     </div>
                 </div>
 
-                {/* Plans Grid */}
-                {/* Increased Gap to gap-10 (approx 40px) or lg:gap-12 (48px) */}
                 <div className={`grid ${gridCols} gap-10 lg:gap-12 items-start`}>
                     {plans.map((plan) => {
-                        // --- COMPARISON LOGIC ---
-                        const isPlanIdMatch = userSub?.PlanID === plan.id;
-                        const isFreeTierMatch = (userSub?.PlanID === null || userSub?.Status === "free") && plan.amount === 0;
-                        const isCurrentPlan = isPlanIdMatch || isFreeTierMatch;
+                        // ============================================================
+                        // 👇 UPDATED LOGIC HERE
+                        // ============================================================
+
+                        // 1. Check if the user has a strictly ACTIVE subscription
+                        const hasActiveSub = userSub?.Status === "active";
+
+                        // 2. Paid Plan Logic:
+                        // It is "Current" ONLY if the IDs match AND the status is Active.
+                        // If status is 'cancelled', 'past_due', or 'pending', this returns false (so user can click Subscribe)
+                        const isActivePaidPlan = plan.amount > 0 && userSub?.PlanID === plan.id && hasActiveSub;
+
+                        // 3. Free Plan Logic:
+                        // It is "Current" if the user has NO active paid subscription.
+                        // (i.e. they are new, or their paid plan expired/cancelled)
+                        const isDefaultFreePlan = plan.amount === 0 && !hasActiveSub;
+
+                        const isCurrentPlan = isActivePaidPlan || isDefaultFreePlan;
+                        
+                        // ============================================================
+
                         const isPro = plan.name.toLowerCase().includes("pro") || plan.name.toLowerCase().includes("premium");
                         const displayPrice = plan.amount === 0 ? "Free" : `₦${(plan.amount/100 ).toLocaleString()}`; 
 
                         return (
-                            // Add a div wrapper to handle scaling or layout specific tweaks
                             <div key={plan.id} className={`transform transition-all duration-300 ${isPro ? 'lg:-mt-4 lg:mb-4' : ''}`}>
                                 <PricingCard
                                     title={plan.name}
@@ -119,7 +122,7 @@ export default function PricingPage() {
     );
 }
 
-// Helper (Unchanged)
+// Helper
 const getFeaturesForPlan = (planName: string, dailyLimit: number) => {
     const name = planName.toLowerCase();
     if (name.includes("free")) {

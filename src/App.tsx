@@ -1,5 +1,5 @@
 import React, { JSX, useEffect, useState } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -15,7 +15,6 @@ function App() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
-      const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");

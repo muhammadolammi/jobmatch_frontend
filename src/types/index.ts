@@ -25,6 +25,8 @@ export interface User {
     id: string;
     email: string;
     role: "employer" | "job_seeker" | "admin" | "none"; // default to "none"
+    display_name: string;
+   
 }
 
 export interface AuthState {
@@ -62,6 +64,7 @@ export const EmptyUser: User = {
     id: "",
     email: "",
     role: "none",
+    display_name: "john"
 };
 
 export const EmptyAuthState: AuthState = {

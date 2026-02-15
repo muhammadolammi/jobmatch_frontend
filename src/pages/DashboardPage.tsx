@@ -88,7 +88,7 @@ export default function DashboardPage() {
                 <header className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-800">
-                            Welcome back, <span className="text-blue-700">{user?.email}</span>
+                            Welcome back, <span className="text-blue-700">{user?.display_name}</span>
                         </h1>
                         <p className="text-gray-600 mt-1">
                             Manage your sessions or create a new analysis below.

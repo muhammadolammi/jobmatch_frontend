@@ -10,6 +10,7 @@ import DashboardPage from "./pages/DashboardPage";
 import SessionPage from "./pages/SessionPage";
 import PricingPage from "./pages/PricingPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -98,16 +99,9 @@ const AdminRoute = ({ children }: { children: JSX.Element }) => {
               </MainLayout>        </ProtectedRoute>} />
 
 
-                      
- 
-           
-        
-      
-
+  
       <Route path="/" element={
-        <ProtectedRoute>
-          <Navigate to="/dashboard" replace />
-        </ProtectedRoute>
+       !isAuthenticated ? <LandingPage /> : <Navigate to="/dashboard" replace />
       } />
 
       {/* Public Routes */}
@@ -115,6 +109,7 @@ const AdminRoute = ({ children }: { children: JSX.Element }) => {
         path="/login"
         element={!isAuthenticated ? <LoginPage /> : <Navigate to="/dashboard" replace />}
       />
+     {/* <Route path="/home" element={<LandingPage />} /> */}
       <Route
         path="/register"
         element={!isAuthenticated ? <RegisterPage /> : <Navigate to="/dashboard" replace />}

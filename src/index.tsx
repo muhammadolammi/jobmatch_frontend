@@ -7,6 +7,14 @@ import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux'
 import { store } from './app/store'
 
+const allowedDomain = "gojobmatch.com";
+
+if (
+  window.location.hostname.endsWith("web.app") ||
+  window.location.hostname.endsWith("firebaseapp.com")
+) {
+  window.location.replace("https://gojobmatch.com");
+}
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

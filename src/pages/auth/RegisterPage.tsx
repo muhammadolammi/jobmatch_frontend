@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { registerUser, selectAuth } from "../../states/authslice";
+import { getProfessions, postProfession } from '../../api/professions';
+import CreatableSelect from 'react-select/creatable';
+import { toTitleCase } from '../../helpers/string';
 
 type Role = 'job_seeker' | 'employer';
 
@@ -17,12 +20,26 @@ const RegisterPage: React.FC = () => {
         company_website: '',
         company_size: 0,
         company_industry: '',
+        profession_id: "",
     });
+    const [professions, setProfessions] = useState<{id: string, name: string}[]>([]);
+const [selectedProfession, setSelectedProfession] = useState<{ id?: string; name: string } | null>(null);
     const [status, setStatus] = useState('');
     const dispatch = useAppDispatch();
     const { loading } = useAppSelector(selectAuth);
     const navigate = useNavigate();
 
+
+
+    useEffect(() => {
+    const fetchProfessions = async () => {
+         const res = await getProfessions(); 
+         setProfessions(res);
+       
+    };
+
+    fetchProfessions();
+}, []);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -30,10 +47,11 @@ const RegisterPage: React.FC = () => {
             [name]: name === 'company_size' ? parseInt(value) || 0 : value,
         }));
     };
-
+   
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setStatus('');
+
 
         const payload: any = {
             email: formData.email,
@@ -43,7 +61,39 @@ const RegisterPage: React.FC = () => {
 
         if (role === 'job_seeker') {
             payload.first_name = formData.first_name;
-            payload.last_name = formData.last_name;
+            payload.last_name = formData.last_name; 
+            // console.log("Selected Profession:", selectedProfession);
+
+            // check if selectedProfession has an id (existing profession) or just a name (new profession)
+            if (selectedProfession) {
+                // if i enter a profession that doesnt exist , registration is successfull but profession isnt created at all in backend. whats wrong?
+                // are you there? 
+                if (selectedProfession.id ) {
+                    payload.profession_id = selectedProfession.id;
+                }
+                else {
+                    // check if the name already exists in professions list (to avoid duplicates)
+                    const existing = professions.find(p => toTitleCase(p.name) === toTitleCase(selectedProfession.name));
+                    if (existing) {
+                        payload.profession_id = existing.id;
+            
+                    }else{
+                            // If it's a new profession, we need to create it first
+                            const newProf = await postProfession(toTitleCase(selectedProfession.name));
+                            if (newProf.id === "") {
+                                setStatus("❌ Failed to create new profession. Please try again.");
+                                return;
+                            }
+                            payload.profession_id = newProf.id; // Use the newly created profession's ID
+                            setProfessions(prev => [...prev, { id: newProf.id, name: newProf.name }]); // Update local professions list with the new profession
+                    }
+                           
+                    }
+            }
+            else {
+                setStatus("❌ Please select or enter a profession.");
+                return;
+            }
         } else {
             payload.company_name = formData.company_name;
             payload.company_website = formData.company_website;
@@ -120,6 +170,28 @@ const RegisterPage: React.FC = () => {
                                     <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} required className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm shadow-sm" placeholder="Doe" />
                                 </div>
                             </div>
+                            <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Profession</label>
+  
+                            <CreatableSelect
+                        isClearable
+                        value={selectedProfession ? { value: selectedProfession.id || '', label: selectedProfession.name } : null}
+                        onChange={(newValue) => {
+                            if (newValue) {
+                                // Check if this is an existing profession
+                                const isExisting = professions.some(p => p.id === newValue.value);
+                                setSelectedProfession({
+                                    id: isExisting ? newValue.value : undefined, // Only set ID if it exists
+                                    name: newValue.label
+                                });
+                            } else {
+                                setSelectedProfession(null);
+                            }
+                        }}
+                        options={professions.map(p => ({ value: p.id, label: p.name }))}
+                        placeholder="Select or type your profession"
+                    />
+                        </div>
                         </div>
                     )}
 

@@ -16,25 +16,36 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+
+
 api.interceptors.response.use(
-    (response) => response, // just return successful responses
+    (response) => response,
     async (error) => {
         const originalRequest = error.config;
 
-        if (error.response && error.response.status === 401 && !originalRequest._retry) {
-            // 🔒 Token expired or unauthorized → redirect to login
+        const isAuthRoute =
+            originalRequest.url.includes("/login") ||
+            originalRequest.url.includes("/refresh");
+
+        if (
+            error.response?.status === 401 &&
+            !originalRequest._retry &&
+            !isAuthRoute
+        ) {
             originalRequest._retry = true;
-            // localStorage.removeItem("access_token");
-            // window.location.href = "/login";
+
             try {
-                const res = await api.post("/refresh"); // refresh token endpoint
+                const res = await api.post("/refresh");
                 const newToken = res.data.access_token;
+
                 localStorage.setItem("access_token", newToken);
+
                 originalRequest.headers.Authorization = `Bearer ${newToken}`;
-                return api(originalRequest); // retry original request
-            } catch (err) {
-                window.location.href = "/login";
-                return Promise.reject(err);
+                return api(originalRequest);
+            } catch (refreshError) {
+                // 🚫 Do NOT hard reload
+                localStorage.removeItem("access_token");
+                return Promise.reject(refreshError);
             }
         }
 

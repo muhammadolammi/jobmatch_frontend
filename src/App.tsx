@@ -50,15 +50,15 @@ function App() {
     );
   }
   // A simple Guard Component
-const AdminRoute = ({ children }: { children: JSX.Element }) => {
+  const AdminRoute = ({ children }: { children: JSX.Element }) => {
     const user = useAppSelector(selectCurrentUser);
     if (user?.role !== "admin") {
-         return <Navigate to="/dashboard" replace />
+      return <Navigate to="/dashboard" replace />
 
-        // return <div className="p-10 text-center text-red-600">Access Denied: Admins Only</div>;
+      // return <div className="p-10 text-center text-red-600">Access Denied: Admins Only</div>;
     }
     return children;
-};
+  };
 
   return (
     <Routes>
@@ -84,24 +84,19 @@ const AdminRoute = ({ children }: { children: JSX.Element }) => {
           </ProtectedRoute>
         }
       />
-      <Route path="/pricing" element={<ProtectedRoute>
-            <MainLayout>
-              <PricingPage />
-            </MainLayout>
-          </ProtectedRoute>} />
 
-      <Route 
-        path="/admin/settings" 
-        element={          <ProtectedRoute>   <MainLayout>  
-           <AdminRoute>
-                <AdminSettingsPage />
-            </AdminRoute>
-              </MainLayout>        </ProtectedRoute>} />
+      <Route
+        path="/admin/settings"
+        element={<ProtectedRoute>   <MainLayout>
+          <AdminRoute>
+            <AdminSettingsPage />
+          </AdminRoute>
+        </MainLayout>        </ProtectedRoute>} />
 
 
-  
+
       <Route path="/" element={
-       !isAuthenticated ? <LandingPage /> : <Navigate to="/dashboard" replace />
+        !isAuthenticated ? <LandingPage /> : <Navigate to="/dashboard" replace />
       } />
 
       {/* Public Routes */}
@@ -109,11 +104,15 @@ const AdminRoute = ({ children }: { children: JSX.Element }) => {
         path="/login"
         element={!isAuthenticated ? <LoginPage /> : <Navigate to="/dashboard" replace />}
       />
-     {/* <Route path="/home" element={<LandingPage />} /> */}
+      {/* <Route path="/home" element={<LandingPage />} /> */}
       <Route
         path="/register"
         element={!isAuthenticated ? <RegisterPage /> : <Navigate to="/dashboard" replace />}
       />
+      <Route path="/pricing" element={
+        <PricingPage />
+      } />
+
 
       {/* 404 Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />

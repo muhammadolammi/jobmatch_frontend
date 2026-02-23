@@ -7,7 +7,6 @@ import { getProfessions, postProfession } from '../../api/professions';
 import CreatableSelect from 'react-select/creatable';
 import { toTitleCase } from '../../helpers/string';
 import Footer from '../../components/Footer';
-import SocialAuthButtons from '../../components/SocialAuthButtons';
 
 type Role = 'job_seeker' | 'employer';
 
@@ -128,9 +127,9 @@ const RegisterPage: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-6">
                     <nav className="hidden md:flex items-center gap-8">
-                        <a className="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" href="#">Features</a>
-                        <a className="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" href="#">Pricing</a>
-                        <a className="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" href="#">Support</a>
+                        <Link className="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" to="/features">Features</Link>
+                        <Link className="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" to="/pricing">Pricing</Link>
+                        <Link className="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" to="/support">Support</Link>
                     </nav>
                     <div className="flex items-center gap-4">
                         <span className="hidden sm:inline text-sm text-slate-500">Already have an account?</span>
@@ -303,8 +302,8 @@ const RegisterPage: React.FC = () => {
                         <div className="bg-slate-50 dark:bg-slate-800/50 p-6 text-center border-t border-slate-100 dark:border-slate-800">
                             <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                                 By clicking "Create Account", you agree to our
-                                <a className="text-primary font-semibold hover:underline p-1" href="#">Terms of Service</a>  and
-                                <a className="text-primary font-semibold hover:underline p-1" href="#">Privacy Policy</a>.
+                                <Link className="text-primary font-semibold hover:underline p-1" to="/terms-of-service">Terms of Service</Link>  and
+                                <Link className="text-primary font-semibold hover:underline p-1" to="/privacy-policy">Privacy Policy</Link>.
                             </p>
                         </div>
 

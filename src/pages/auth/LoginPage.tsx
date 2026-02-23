@@ -4,14 +4,14 @@ import { Loader2, Mail, Lock, ArrowRight } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { loginUser, selectAuth, fetchCurrentUser } from "../../states/authslice";
 import Footer from '../../components/Footer';
-import SocialAuthButtons from '../../components/SocialAuthButtons';
+// import SocialAuthButtons from '../../components/SocialAuthButtons';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [status, setStatus] = useState('');
     const dispatch = useAppDispatch();
-    const { loading, error } = useAppSelector(selectAuth);
+    const { loading } = useAppSelector(selectAuth);
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -122,7 +122,7 @@ const LoginPage: React.FC = () => {
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
                                 <label className="text-sm font-semibold text-slate-700 dark:text-slate-300" htmlFor="password">Password</label>
-                                <a className="text-xs font-bold text-primary hover:underline" href="#">Forgot Password?</a>
+                                <Link className="text-xs font-bold text-primary hover:underline" to="/forgot-password">Forgot Password?</Link>
                             </div>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
@@ -178,7 +178,7 @@ const LoginPage: React.FC = () => {
                     <div className="mt-6">
                         <p className="text-center text-sm text-slate-500 dark:text-slate-400">
                             Don't have an account?
-                            {/* <a className="font-bold text-primary hover:underline ml-1" href="#">Sign up for free</a> */}
+                            {/* <a className="font-bold text-primary hover:underline ml-1" >Sign up for free</a> */}
                             <Link to="/register" className="font-bold text-primary hover:underline ml-1">
                                 Sign up
                             </Link>

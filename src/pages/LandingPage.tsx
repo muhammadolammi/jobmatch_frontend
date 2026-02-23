@@ -1,14 +1,11 @@
 import React from "react";
-import { motion } from "framer-motion";
 
-import { Button } from "../components/ui/button";
-import { Card, CardContent } from "../components/ui/card";
 import { UserSearch, Building2, Brain, Zap, AlarmClockCheck } from 'lucide-react';
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function LandingPage() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   return (
     <div className="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -270,45 +267,45 @@ export default function LandingPage() {
                 </div>
                 <p className="text-slate-500 text-sm leading-relaxed mb-6">The future of hiring is here. Leveraging AI to build more human workplaces.</p>
                 {/* <div className="flex gap-4">
-                  <a className="text-slate-400 hover:text-primary transition-colors" href="#"><span className="material-symbols-outlined">public</span></a>
-                  <a className="text-slate-400 hover:text-primary transition-colors" href="#"><span className="material-symbols-outlined">alternate_email</span></a>
-                  <a className="text-slate-400 hover:text-primary transition-colors" href="#"><span className="material-symbols-outlined">terminal</span></a>
+                  <a className="text-slate-400 hover:text-primary transition-colors" ><span className="material-symbols-outlined">public</span></a>
+                  <a className="text-slate-400 hover:text-primary transition-colors" ><span className="material-symbols-outlined">alternate_email</span></a>
+                  <a className="text-slate-400 hover:text-primary transition-colors" ><span className="material-symbols-outlined">terminal</span></a>
                 </div> */}
               </div>
               <div>
                 <h4 className="font-bold text-slate-900 dark:text-white mb-6">Solutions</h4>
                 <ul className="space-y-4 text-sm text-slate-500 dark:text-slate-400">
-                  <li><a className="hover:text-primary transition-colors" href="#">For Job Seekers</a></li>
-                  <li><a className="hover:text-primary transition-colors" href="#">For Employers</a></li>
-                  {/* <li><a className="hover:text-primary transition-colors" href="#">Enterprise</a></li> */}
-                  <li><a className="hover:text-primary transition-colors" href="#">API Access</a></li>
+                  <li><Link className="hover:text-primary transition-colors" to="/job-seekers">For Job Seekers</Link></li>
+                  <li><Link className="hover:text-primary transition-colors" to="/employers">For Employers</Link></li>
+                  {/* <li><a className="hover:text-primary transition-colors" >Enterprise</a></li> */}
+                  <li><Link className="hover:text-primary transition-colors" to="/api-access">API Access</Link></li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-bold text-slate-900 dark:text-white mb-6">Resources</h4>
                 <ul className="space-y-4 text-sm text-slate-500 dark:text-slate-400">
-                  <li><a className="hover:text-primary transition-colors" href="#">Help Center</a></li>
-                  <li><a className="hover:text-primary transition-colors" href="#">Resume Tips</a></li>
-                  <li><a className="hover:text-primary transition-colors" href="#">Hiring Blog</a></li>
-                  <li><a className="hover:text-primary transition-colors" href="#">Career Advice</a></li>
+                  <li><Link className="hover:text-primary transition-colors" to="/help-center">Help Center</Link></li>
+                  <li><Link className="hover:text-primary transition-colors" to="/resume-tips">Resume Tips</Link></li>
+                  <li><Link className="hover:text-primary transition-colors" to="/hiring-blog">Hiring Blog</Link></li>
+                  <li><Link className="hover:text-primary transition-colors" to="/career-advice">Career Advice</Link></li>
                 </ul>
               </div>
               <div>
                 <h4 className="font-bold text-slate-900 dark:text-white mb-6">Legal</h4>
                 <ul className="space-y-4 text-sm text-slate-500 dark:text-slate-400">
-                  <li><a className="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
-                  <li><a className="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
-                  <li><a className="hover:text-primary transition-colors" href="#">Cookie Policy</a></li>
-                  {/* <li><a className="hover:text-primary transition-colors" href="#">GDPR</a></li> */}
+                  <li><Link className="hover:text-primary transition-colors" to="/privacy-policy">Privacy Policy</Link></li>
+                  <li><Link className="hover:text-primary transition-colors" to="/terms-of-service">Terms of Service</Link></li>
+                  <li><Link className="hover:text-primary transition-colors" to="/cookie-policy">Cookie Policy</Link></li>
+                  {/* <li><a className="hover:text-primary transition-colors" >GDPR</a></li> */}
                 </ul>
               </div>
             </div>
             <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
               <p className="text-xs text-slate-400">© 2024 gojobmatch.com. All rights reserved.</p>
               {/* <div className="flex gap-6 text-xs text-slate-400">
-                <a className="hover:text-primary" href="#">Status</a>
-                <a className="hover:text-primary" href="#">Security</a>
-                <a className="hover:text-primary" href="#">Sitemap</a>
+                <a className="hover:text-primary" >Status</a>
+                <a className="hover:text-primary" >Security</a>
+                <a className="hover:text-primary" >Sitemap</a>
               </div> */}
             </div>
           </footer>

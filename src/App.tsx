@@ -96,7 +96,9 @@ function App() {
 
 
       <Route path="/" element={
-        !isAuthenticated ? <LandingPage /> : <Navigate to="/dashboard" replace />
+        // !isAuthenticated ? <LandingPage /> : <Navigate to="/dashboard" replace />
+        <LandingPage />
+
       } />
 
       {/* Public Routes */}

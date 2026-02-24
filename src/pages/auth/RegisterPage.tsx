@@ -7,6 +7,7 @@ import { getProfessions, postProfession } from '../../api/professions';
 import CreatableSelect from 'react-select/creatable';
 import { toTitleCase } from '../../helpers/string';
 import Footer from '../../components/Footer';
+import GoJobMatchLogo from '../../components/JobMatchLogo';
 
 type Role = 'job_seeker' | 'employer';
 
@@ -116,20 +117,13 @@ const RegisterPage: React.FC = () => {
     return (
         <div className="bg-background-light dark:bg-background-dark min-h-screen font-display">
             {/* <!-- Top Navigation Bar --> */}
-            <header className="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark px-6 md:px-10 py-3 sticky top-0 z-50">
-                <div className="flex items-center gap-3">
-                    <div className="text-primary dark:text-slate-100">
-                        <svg className="size-6" fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z"></path>
-                        </svg>
-                    </div>
-                    <h2 className="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight">GoJobMatch</h2>
-                </div>
+            <header className="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 px-6 md:px-20 py-4 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+                <GoJobMatchLogo />
                 <div className="flex items-center gap-6">
                     <nav className="hidden md:flex items-center gap-8">
                         <Link className="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" to="/features">Features</Link>
                         <Link className="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" to="/pricing">Pricing</Link>
-                        <Link className="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" to="/support">Support</Link>
+                        {/* <Link className="text-slate-600 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors" to="/support">Support</Link> */}
                     </nav>
                     <div className="flex items-center gap-4">
                         <span className="hidden sm:inline text-sm text-slate-500">Already have an account?</span>

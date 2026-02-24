@@ -27,7 +27,7 @@ const LoginPage: React.FC = () => {
 
         if (loginUser.fulfilled.match(result)) {
             await dispatch(fetchCurrentUser());
-            navigate('/');
+            navigate('/dashboard');
         } else {
             // check if the payload have wrong password in it and replace with Invalid email or password.
             // use contains instead of exact match to check if the payload contains wrong password

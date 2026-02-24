@@ -3,6 +3,7 @@ import React from "react";
 import { UserSearch, Building2, Brain, Zap, AlarmClockCheck } from 'lucide-react';
 
 import { Link } from "react-router-dom";
+import GoJobMatchLogo from "../components/JobMatchLogo";
 
 export default function LandingPage() {
   // const navigate = useNavigate();
@@ -13,14 +14,7 @@ export default function LandingPage() {
         <div className="layout-container flex h-full grow flex-col">
           {/* <!-- Navigation --> */}
           <header className="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 px-6 md:px-20 py-4 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
-            <div className="flex items-center gap-2 text-primary dark:text-slate-100">
-              <div className="text-primary dark:text-slate-100">
-                <svg className="size-6" fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z"></path>
-                </svg>
-              </div>
-              <h2 className="text-lg font-bold leading-tight tracking-tight">GoJobMatch</h2>
-            </div>
+            <GoJobMatchLogo />
             <div className="hidden md:flex flex-1 justify-end gap-8">
               <nav className="flex items-center gap-8">
                 {/* <a className="text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-primary dark:hover:text-white transition-colors" href="#solutions">Solutions</a> */}
@@ -301,7 +295,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-xs text-slate-400">© 2024 gojobmatch.com. All rights reserved.</p>
+              <p className="text-xs text-slate-400">© {new Date().getFullYear()} gojobmatch.com. All rights reserved.</p>
               {/* <div className="flex gap-6 text-xs text-slate-400">
                 <a className="hover:text-primary" >Status</a>
                 <a className="hover:text-primary" >Security</a>

@@ -6,8 +6,9 @@ export interface Plan {
     amount: number;
     currency: string;
     daily_limit: number;
-    plan_code?: string; 
+    plan_code?: string;
     subscription_page: string;
+    description?: string;
 }
 export interface UserSubscription {
     ID?: string;
@@ -24,11 +25,11 @@ export interface SubscribeResponse {
 
 // 1. Fetch all available plans
 export const getPlans = async (): Promise<Plan[]> => {
-    
-     try {
-       const response = await api.get("/plans"); 
-      //  console.log(response.data)
-    return response.data.Data; // Assuming backend returns [ {name: "Pro", ...}, ... ]
+
+    try {
+        const response = await api.get("/plans");
+        //  console.log(response.data)
+        return response.data.Data; // Assuming backend returns [ {name: "Pro", ...}, ... ]
     } catch (error: any) {
         // Axios stores the response error in error.response.data
         const errMsg = error.response?.data?.error || "Failed to get PLans";

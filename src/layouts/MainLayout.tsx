@@ -1,8 +1,9 @@
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { logout, selectCurrentUser } from "../states/authslice";
-import { useNavigate, Link } from "react-router-dom"; // Added Link for semantic navigation
+import { useNavigate } from "react-router-dom";
 import { LayoutDashboard, LogOut } from "lucide-react"; // Optional: Icons make it look better
+import GoJobMatchLogo from "../components/JobMatchLogo";
 
 interface MainLayoutProps {
     children: React.ReactNode;
@@ -10,7 +11,7 @@ interface MainLayoutProps {
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     const user = useAppSelector(selectCurrentUser);
-    
+
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -26,15 +27,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className="min-h-screen flex flex-col bg-gray-50">
             {/* Top Navbar */}
             <header className="bg-white shadow-md py-4 px-6 flex justify-between items-center sticky top-0 z-50">
-                <Link to="/dashboard">
-                    <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">JobMatch AI</h1>
-                </Link>
+                <GoJobMatchLogo />
 
                 {/* Right Side Actions - Flex Container for Row Layout */}
                 <div className="flex items-center gap-4">
-                     
-                     {/* 1. Admin Button (Conditional) */}
-                     {isAdmin && (
+
+                    {/* 1. Admin Button (Conditional) */}
+                    {isAdmin && (
                         <button
                             onClick={() => navigate("/admin/settings")}
                             className="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg transition-colors"
@@ -42,8 +41,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                             <LayoutDashboard className="w-4 h-4" />
                             Admin Dash
                         </button>
-                     )}
-                    
+                    )}
+
                     {/* 2. Logout Button */}
                     <button
                         onClick={handleLogout}

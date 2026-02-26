@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
     const TIKTOK_URL = "https://tiktok.com/@n3xtbridge";
 
     return (
-        <footer className="mt-12 py-8 border-t border-slate-200 dark:border-slate-800">
+        <footer className="py-8 border-t border-slate-200 dark:border-slate-800">
             <div className="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
 
                 <p className="text-slate-500 text-sm">

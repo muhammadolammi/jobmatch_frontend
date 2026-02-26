@@ -31,7 +31,7 @@ function JobSeekerDashboardSection() {
 
 export default function DashboardPage() {
     const user = useAppSelector(selectCurrentUser);
-    
+
     // Session States
     const [creating, setCreating] = useState(false);
     const [title, setTitle] = useState("");
@@ -82,102 +82,105 @@ export default function DashboardPage() {
     const isPaidPlan = subscription?.Status === "active" && subscription?.PlanID !== null;
 
     return (
-        <div className="min-h-screen bg-gray-50 py-10 px-4">
-            <div className="max-w-5xl mx-auto">
-                {/* Header */}
-                <header className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-800">
-                            Welcome back, <span className="text-blue-700">{user?.display_name}</span>
-                        </h1>
-                        <p className="text-gray-600 mt-1">
-                            Manage your sessions or create a new analysis below.
-                        </p>
-                    </div>
+        <>
 
-                    {/* Subscription Button */}
-                    {!loadingSub && (
-                        <Link
-                            to="/pricing"
-                            className={`inline-flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium transition-colors ${
-                                isPaidPlan 
+            <div className="min-h-screen bg-gray-50 py-10 px-4">
+                <div className="max-w-5xl mx-auto">
+                    {/* Header */}
+                    <header className="mb-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <h1 className="text-3xl font-bold text-gray-800">
+                                Welcome back, <span className="text-blue-700">{user?.display_name}</span>
+                            </h1>
+                            <p className="text-gray-600 mt-1">
+                                Manage your sessions or create a new analysis below.
+                            </p>
+                        </div>
+
+                        {/* Subscription Button */}
+                        {!loadingSub && (
+                            <Link
+                                to="/pricing"
+                                className={`inline-flex items-center justify-center px-4 py-2 border rounded-md shadow-sm text-sm font-medium transition-colors ${isPaidPlan
                                     ? "bg-white text-gray-700 border-gray-300 hover:bg-gray-50" // Neutral style for "Manage"
                                     : "text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 border-transparent" // CTA style for "Upgrade"
-                            }`}
-                        >
-                            <CreditCard className="mr-2 h-4 w-4" />
-                            {isPaidPlan ? "Manage Subscription" : "Upgrade Plan"}
-                        </Link>
-                    )}
-                </header>
+                                    }`}
+                            >
+                                <CreditCard className="mr-2 h-4 w-4" />
+                                {isPaidPlan ? "Manage Subscription" : "Upgrade Plan"}
+                            </Link>
+                        )}
+                    </header>
 
-                {/* Role Section */}
-                {isHR && <HRDashboardSection />}
-                {isJobSeeker && <JobSeekerDashboardSection />}
+                    {/* Role Section */}
+                    {isHR && <HRDashboardSection />}
+                    {isJobSeeker && <JobSeekerDashboardSection />}
 
-                {/* Create Session Card */}
-                <div className="bg-white shadow-md rounded-2xl p-8 mb-10">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                        <PlusCircle className="text-blue-600 h-6 w-6" />
-                        Create a New Session
-                    </h2>
+                    {/* Create Session Card */}
+                    <div className="bg-white shadow-md rounded-2xl p-8 mb-10">
+                        <h2 className="text-2xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                            <PlusCircle className="text-blue-600 h-6 w-6" />
+                            Create a New Session
+                        </h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Session Title</label>
-                            <input
-                                type="text"
-                                placeholder={
-                                    isHR
-                                        ? "e.g., Backend Engineer Hiring Round 1"
-                                        : "e.g., Resume Analysis for Software Engineer Role"
-                                }
-                                value={title}
-                                onChange={(e) => setTitle(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
-                            />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Session Title</label>
+                                <input
+                                    type="text"
+                                    placeholder={
+                                        isHR
+                                            ? "e.g., Backend Engineer Hiring Round 1"
+                                            : "e.g., Resume Analysis for Software Engineer Role"
+                                    }
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                                <input
+                                    type="text"
+                                    value={jobTitle}
+                                    onChange={(e) => setJobTitle(e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+                                    placeholder="e.g., Senior Software Engineer"
+                                />
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Job Description
+                                </label>
+                                <textarea
+                                    value={jobDescription}
+                                    onChange={(e) => setJobDescription(e.target.value)}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+                                    rows={5}
+                                    placeholder="Paste the full job description here..."
+                                />
+                            </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
-                            <input
-                                type="text"
-                                value={jobTitle}
-                                onChange={(e) => setJobTitle(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
-                                placeholder="e.g., Senior Software Engineer"
-                            />
-                        </div>
-
-                        <div className="md:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Job Description
-                            </label>
-                            <textarea
-                                value={jobDescription}
-                                onChange={(e) => setJobDescription(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
-                                rows={5}
-                                placeholder="Paste the full job description here..."
-                            />
+                        <div className="flex justify-end">
+                            <button
+                                onClick={handleCreate}
+                                disabled={creating}
+                                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition disabled:opacity-50 flex items-center"
+                            >
+                                {creating && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
+                                {creating ? "Creating..." : "Create Session"}
+                            </button>
                         </div>
                     </div>
 
-                    <div className="flex justify-end">
-                        <button
-                            onClick={handleCreate}
-                            disabled={creating}
-                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition disabled:opacity-50 flex items-center"
-                        >
-                            {creating && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
-                            {creating ? "Creating..." : "Create Session"}
-                        </button>
-                    </div>
+                    {/* Session List */}
+                    <SessionList />
                 </div>
-
-                {/* Session List */}
-                <SessionList />
             </div>
-        </div>
+        </>
+
     );
 }

@@ -1,12 +1,14 @@
 
 import React from 'react';
 import GoJobMatchLogo from "../components/JobMatchLogo";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAppSelector } from '../app/hooks';
 import { selectIsAuthenticated } from '../states/authslice';
 
 const MainHeader: React.FC = () => {
     const isAuthenticated = useAppSelector(selectIsAuthenticated);
+    const location = useLocation();
+    const currentPath = location.pathname.replace("/", "");
 
 
     return (
@@ -25,21 +27,26 @@ const MainHeader: React.FC = () => {
                         Pricing
                     </Link>
                 </nav>
-                {isAuthenticated ? <div className="flex gap-3">
-                    <Link className="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold hover:bg-slate-800 transition-all" to={"/dashboard"}>
-                        Dashboard
-                    </Link>
-                    {/* <Link className="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-primary dark:text-white text-sm font-bold hover:bg-slate-200 transition-all" to={"/login"}>
-                        Login
-                    </Link> */}
-                </div> : <div className="flex gap-3">
+                {isAuthenticated ? (
+                    <div className="flex gap-3">
+                        {currentPath !== "dashboard" && (
+                            <Link
+                                className="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold hover:bg-slate-800 transition-all"
+                                to={"/dashboard"}
+                            >
+                                Dashboard
+                            </Link>
+                        )}
+                    </div>
+                ) : (<div className="flex gap-3">
                     <Link className="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold hover:bg-slate-800 transition-all" to={"/register"}>
                         Get Started
                     </Link>
                     <Link className="flex min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-primary dark:text-white text-sm font-bold hover:bg-slate-200 transition-all" to={"/login"}>
                         Login
                     </Link>
-                </div>}
+                </div>)
+                }
             </div>
             {/* <!-- Mobile Menu Icon --> */}
             <button className="md:hidden p-2">

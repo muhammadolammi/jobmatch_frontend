@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
 import { selectIsAuthenticated } from "../states/authslice";
+import { Loader2 } from "lucide-react"
 
 export default function PricingPage() {
     const [plans, setPlans] = useState<Plan[]>([]);
@@ -53,7 +54,7 @@ export default function PricingPage() {
     }, []);
 
     const handleSubscribe = async (planCode: string) => {
-        if (planCode == "frontend_enterprise") {
+        if (planCode === "frontend_enterprise") {
             navigate("/contact?department=sales")
             return
 
@@ -90,7 +91,21 @@ export default function PricingPage() {
         }
     };
 
-
+    if (loading)
+        return (
+            <div className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark font-display">
+                <MainHeader />
+                <main className="flex-1 flex flex-col justify-center items-center px-6 py-12 md:py-24">
+                    <div className="text-center space-y-4">
+                        <Loader2 className="animate-spin h-12 w-12 text-primary mx-auto" />
+                        <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400">
+                            Loading your pricing plans...
+                        </p>
+                    </div>
+                </main>
+                <Footer />
+            </div>
+        );
     return (
         <div>
             <MainHeader />

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { UserSearch, Building2, Brain, Zap, AlarmClockCheck } from 'lucide-react';
-
+import { ReactComponent as LogoSVG } from '../assets/logo2.svg';
 import { Link } from "react-router-dom";
 import MainHeader from "../components/MainHeader";
 
@@ -227,11 +227,9 @@ export default function LandingPage() {
               <div className="col-span-1 md:col-span-1">
                 <div className="flex items-center gap-2 text-primary dark:text-white mb-6">
                   <div className="text-primary dark:text-slate-100">
-                    <svg className="size-6" fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z"></path>
-                    </svg>
+                    <LogoSVG className="h-10 w-auto" />
+
                   </div>
-                  <h2 className="text-lg font-bold leading-tight tracking-tight">GoJobMatch</h2>
                 </div>
                 <p className="text-slate-500 text-sm leading-relaxed mb-6">The future of hiring is here. Leveraging AI to build more human workplaces.</p>
                 {/* <div className="flex gap-4">

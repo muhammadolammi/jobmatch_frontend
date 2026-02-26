@@ -26,7 +26,7 @@ export const PricingCard: React.FC<PricingCardProps> = ({
   description
 }) => {
   var buttonWord = "Subscribe Now"
-  if (planCode == "frontend_enterprise") {
+  if (planCode === "frontend_enterprise") {
     buttonWord = "Contact Sales"
   }
   return (
@@ -46,8 +46,8 @@ export const PricingCard: React.FC<PricingCardProps> = ({
       </div>
       <div className="mb-8">
         <div className="flex items-baseline">
-          <span className="text-4xl font-black tracking-tight">{price == "0" ? "" : price}</span>
-          <span className="text-slate-500 ml-1">{price == "" ? "" : "/mo"}</span >
+          <span className="text-4xl font-black tracking-tight">{price === "0" ? "" : price}</span>
+          <span className="text-slate-500 ml-1">{price === "" ? "" : "/mo"}</span >
         </div>
       </div>
       {/* <div className="mt-4 flex items-baseline text-gray-900">

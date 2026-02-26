@@ -1,22 +1,27 @@
-
-
-// create a react component that return an html
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ReactComponent as LogoSVG } from '../assets/logo2.svg';
 
 const GoJobMatchLogo: React.FC = () => {
     const navigate = useNavigate();
 
-
     return (
-        <div className="flex items-center gap-2 text-primary dark:text-slate-100" onClick={() => { navigate("/") }}>
-            <div className="text-primary dark:text-slate-100">
-                <svg className="size-6" fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z"></path>
-                </svg>
+        <div
+            className="flex items-center gap-2 cursor-pointer text-primary dark:text-slate-100"
+            onClick={() => navigate("/")}
+        >
+            <div className="flex items-center">
+                {/* 1. REMOVED viewBox="0 0 48 48" - let the SVG use its own.
+                  2. 'size-12' or 'w-24' might be better than 'size-6' 
+                     because this is a wide horizontal logo, not a square icon.
+                */}
+                <LogoSVG className="h-10 w-auto" />
             </div>
-            <h2 className="text-lg font-bold leading-tight tracking-tight">GoJobMatch</h2>
+
+            {/* NOTE: Your SVG already contains the text "GO JobMatch". 
+               If you want to use the H2 below instead, you should delete 
+               the <text> tag from the SVG file above.
+            */}
         </div>
     );
 };

@@ -7,7 +7,8 @@ export const api = axios.create({
     baseURL: API_BASE_URL,
     withCredentials: false,
     headers: {
-        "client-api-key": API_KEY
+        "client-api-key": API_KEY,
+        // "Content-Type": "application/json",
     },
 });
 api.interceptors.request.use((config) => {

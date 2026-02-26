@@ -11,6 +11,8 @@ import SessionPage from "./pages/SessionPage";
 import PricingPage from "./pages/PricingPage";
 import AdminSettingsPage from "./pages/AdminSettingsPage";
 import LandingPage from "./pages/LandingPage";
+import ContactPage from "./pages/ContactPage";
+import F404Page from "./pages/404Page";
 
 function App() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
@@ -95,13 +97,14 @@ function App() {
 
 
 
+
+
+      {/* Public Routes */}
       <Route path="/" element={
         // !isAuthenticated ? <LandingPage /> : <Navigate to="/dashboard" replace />
         <LandingPage />
 
       } />
-
-      {/* Public Routes */}
       <Route
         path="/login"
         element={!isAuthenticated ? <LoginPage /> : <Navigate to="/dashboard" replace />}
@@ -111,13 +114,21 @@ function App() {
         path="/register"
         element={!isAuthenticated ? <RegisterPage /> : <Navigate to="/dashboard" replace />}
       />
+      <Route
+        path="/contact"
+        element={
+          <ContactPage />
+        }
+      />
       <Route path="/pricing" element={
         <PricingPage />
       } />
 
 
       {/* 404 Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={
+        < F404Page />
+      } />
     </Routes>
   );
 }

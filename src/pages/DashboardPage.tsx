@@ -4,12 +4,13 @@ import React, { useState } from "react";
 import { createSession } from "../api/sessions";
 // import { getUserSubscription, UserSubscription } from "../api/subscriptions"; // Import the API we made
 import { SessionList } from "../components/SessionList";
-import { PlusCircle, Loader2, ChartNoAxesCombined, Info, History, Percent, BookCheck } from "lucide-react";
+import { PlusCircle, Loader2, ChartNoAxesCombined, Info, History, UploadCloud, FileText, } from "lucide-react";
+// import { PlusCircle, Loader2, ChartNoAxesCombined, Info, History,UploadCloud, FileText, Percent, BookCheck } from "lucide-react";
+
 import LoggedInHeader from "../components/LoggedInHeader";
 import Footer from "../components/Footer";
 import { useAppSelector } from "../app/hooks";
 import { selectCurrentUser } from "../states/authslice";
-import { UploadCloud, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { analyzeResume } from "../helpers/analyse";
 import { handleUpload } from "../helpers/fileupload";
@@ -156,6 +157,7 @@ export default function DashboardPage() {
 
     // console.log(user)
     const isHR = user?.role === "employer";
+    const hasSideBAR = false
     // const isJobSeeker = user?.role === "job_seeker";
 
     // Logic: Is the user on a paid plan?
@@ -175,8 +177,16 @@ export default function DashboardPage() {
                     {/* {isHR && <HRDashboardSection />}
                         {isJobSeeker && <JobSeekerDashboardSection />} */}
                     {/* Create Session Card */}
-                    <div className="lg:col-span-8 flex flex-col gap-6">
-                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm shadow-slate-200/50">
+                    {/* <div className="lg:col-span-8 flex flex-col gap-6 "> */}
+                    <div
+                        // className="lg:col-span-8 lg:col-start-3 flex flex-col gap-6"
+                        className={`flex flex-col gap-6 ${hasSideBAR
+                            ? "lg:col-span-8"
+                            : "lg:col-span-10 lg:col-start-2"
+                            }`}
+
+                    >
+                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm shadow-slate-300/50">
                             <div className="flex items-center gap-3 mb-6">
                                 <span className="material-symbols-outlined text-primary dark:text-slate-200">
                                     <PlusCircle className="size-5" />
@@ -299,7 +309,7 @@ export default function DashboardPage() {
 
                     </div>
 
-                    <div className="lg:col-span-4 flex flex-col gap-6">
+                    {/* <div className="lg:col-span-4 flex flex-col gap-6">
                         <div className="grid grid-cols-1 gap-4">
                             <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4 shadow-sm">
                                 <div className="size-12 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 flex items-center justify-center">
@@ -311,9 +321,9 @@ export default function DashboardPage() {
                                     <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Analyses Completed</p>
                                     <p className="text-2xl font-black text-slate-900 dark:text-white">1,284</p>
                                 </div>
-                            </div>
+                            </div> *
 
-                            {/* <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4 shadow-sm">
+                            <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4 shadow-sm">
                                 <div className="size-12 rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-600 flex items-center justify-center">
                                     <span className="material-symbols-outlined text-2xl">token</span>
                                 </div>
@@ -321,7 +331,7 @@ export default function DashboardPage() {
                                     <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">Credits Remaining</p>
                                     <p className="text-2xl font-black text-slate-900 dark:text-white">450</p>
                                 </div>
-                            </div> */}
+                            </div>
                             <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4 shadow-sm">
                                 <div className="size-12 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 flex items-center justify-center">
                                     <span className="material-symbols-outlined text-2xl">
@@ -337,7 +347,7 @@ export default function DashboardPage() {
                                 </div>
                             </div>
                         </div>
-                        {/* <div className="bg-primary text-white p-6 rounded-xl relative overflow-hidden group">
+                        <div className="bg-primary text-white p-6 rounded-xl relative overflow-hidden group">
                             <div className="relative z-10">
                                 <h4 className="font-bold mb-2">Need bulk analysis?</h4>
                                 <p className="text-sm text-slate-300 mb-4">Upload up to 500 resumes at once with our Enterprise API.</p>
@@ -346,8 +356,8 @@ export default function DashboardPage() {
                             <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
                                 <span className="material-symbols-outlined text-8xl">bolt</span>
                             </div>
-                        </div> */}
-                    </div>
+                        </div>
+                    </div> */}
                 </div>
 
                 {/* Session List */}

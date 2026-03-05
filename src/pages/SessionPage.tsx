@@ -446,6 +446,7 @@ import { api } from "../api/client";
 import { getSession } from "../api/sessions";
 import { useSessionUpdates } from "../hooks/useSessionUpdates";
 import { ArrowLeftIcon, CheckCircle2, CheckCircle, AlertTriangle, AlertCircle, Lightbulb, Building2, ChevronDown } from "lucide-react";
+import Footer from "../components/Footer";
 
 export default function SessionPage() {
     const { id: sessionId } = useParams<{ id: string }>();
@@ -559,6 +560,14 @@ export default function SessionPage() {
         return <div className="p-6">{content}</div>;
     }
 
+    if (loadingSession) {
+        return <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+            <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            {/* <p className="text-sm text-slate-500 dark:text-slate-400">
+            Loading analysis...
+        </p> */}
+        </div>
+    }
     /* ---------------- MAIN PAGE ---------------- */
     return (
         <div className="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
@@ -576,8 +585,8 @@ export default function SessionPage() {
                     </div>
                 </div>
             </header>
-
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {/* main */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                     {/* LEFT CONTENT */}
@@ -819,7 +828,9 @@ export default function SessionPage() {
                     </aside>
                 </div>
 
-            </main >
+            </div >
+            <Footer />
         </div >
+
     );
 }

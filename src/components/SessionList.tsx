@@ -3,6 +3,7 @@ import { Session } from "../types";
 import { getSessions } from "../api/sessions";
 // import { Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
 // import { SessionCard } from "./SessionCard";
 
 export const SessionList = () => {
@@ -25,7 +26,13 @@ export const SessionList = () => {
     }, []);
 
     if (loading)
-        return <p className="text-gray-500 text-center">Loading sessions...</p>;
+        return <div className="flex flex-col items-center justify-center min-h-[10vh] gap-4">
+            <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            {/* <p className="text-sm text-slate-500 dark:text-slate-400">
+            Loading analysis...
+        </p> */}
+        </div>
+    // return <p className="text-gray-500 text-center">Loading sessions...</p>;
 
     if (!sessions.length)
         return (

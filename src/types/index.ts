@@ -19,15 +19,29 @@ export interface Session {
     created_at: string;
     status: "pending" | "completed" | "failed" | "processing";
     user_id: string;
+    job_title: string;
+    job_description: string;
 }
 
 export interface User {
     id: string;
     email: string;
     role: "employer" | "job_seeker" | "admin" | "none"; // default to "none"
-    display_name: string;
-   
+    // company details
+    company_name?: string;
+    company_size?: number;
+    company_industry?: string;
+    company_website?: string;
+    // user details
+    first_name?: string;
+    last_name?: string;
+    resume_url?: string;
+
+    // display_name: string;
+
 }
+
+
 
 export interface AuthState {
     user: User;
@@ -36,6 +50,7 @@ export interface AuthState {
     loading: boolean;
     error: string;
 }
+
 
 // ------------------- EMPTY VERSIONS -------------------
 
@@ -58,14 +73,17 @@ export const EmptySession: Session = {
     created_at: "",
     status: "pending",
     user_id: "",
+    job_description: "",
+    job_title: ""
 };
 
 export const EmptyUser: User = {
     id: "",
     email: "",
     role: "none",
-    display_name: "john"
+
 };
+
 
 export const EmptyAuthState: AuthState = {
     user: EmptyUser,

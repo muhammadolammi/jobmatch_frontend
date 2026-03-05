@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
-import MainLayout from "./layouts/MainLayout";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
 import { selectIsAuthenticated, fetchCurrentUser, refreshToken, selectCurrentUser } from "./states/authslice";
 import DashboardPage from "./pages/DashboardPage";
@@ -69,9 +68,7 @@ function App() {
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <MainLayout>
-              <DashboardPage />
-            </MainLayout>
+            <DashboardPage />
           </ProtectedRoute>
         }
       />
@@ -80,20 +77,18 @@ function App() {
         path="/session/:id"
         element={
           <ProtectedRoute>
-            <MainLayout>
-              <SessionPage />
-            </MainLayout>
+            <SessionPage />
           </ProtectedRoute>
         }
       />
 
       <Route
         path="/admin/settings"
-        element={<ProtectedRoute>   <MainLayout>
+        element={<ProtectedRoute>
           <AdminRoute>
             <AdminSettingsPage />
           </AdminRoute>
-        </MainLayout>        </ProtectedRoute>} />
+        </ProtectedRoute>} />
 
 
 

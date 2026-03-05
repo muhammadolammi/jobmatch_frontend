@@ -54,7 +54,6 @@ export default function DashboardPage() {
 
     const [files, setFiles] = useState<FileList | null>(null);
     const [uploadError, setUploadError] = useState("");
-    const [sessionId, setSessionId] = useState("");
 
 
     // // Fetch Subscription on Mount
@@ -119,39 +118,23 @@ export default function DashboardPage() {
                 job_description: jobDescription
             });
 
-
-
-            // 2️⃣ Upload Files
-            // const formData = new FormData();
-            // Array.from(files!).forEach((file) => {
-            //     formData.append("files", file);
-            // });
-
-            // await api.post(`/upload/${sessionId}`, formData, {
-            //     headers: { "Content-Type": "multipart/form-data" }
-            // });
-            setSessionId(session.id)
-            handleUpload({
-                sessionId: sessionId,
+            if (!session.id) {
+                throw new Error("Empty session id returned from server.");
+            }
+            await handleUpload({
+                sessionId: session.id,
                 files: files,
                 setStatus: setStatus,
                 setLoading: setCreating
             })
-
-            // 3️⃣ Trigger Analysis (optional if backend auto-triggers)
-            await analyzeResume(sessionId);
+            await analyzeResume(session.id, "Analysis queued successfully!");
+            // Navigate using the local variable
+            navigate(`/session/${session.id}`);
 
 
         } catch (err) {
             console.error(err);
-            alert("Something went wrong during creation.");
-        } finally {
-            if (sessionId) {
-                navigate(`/session/${sessionId}`);
-
-
-            }
-            setCreating(false);
+            alert(`Something went wrong during creation. error: ${err}`,);
         }
     };
 

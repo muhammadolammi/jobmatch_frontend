@@ -1,5 +1,4 @@
 import { api } from "../api/client";
-import { analyzeResume } from "./analyse";
 
 interface Props {
     sessionId: string;
@@ -12,6 +11,7 @@ const uploadFileToR2 = async (
     file: File,
     onProgress: (percent: number) => void
 ) => {
+
     return new Promise<void>((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open("PUT", uploadUrl);
@@ -34,6 +34,11 @@ export const handleUpload = async (prop: Props) => {
     if (!prop.files || prop.files.length === 0) {
         prop.setStatus("⚠️ Please select at least one file.");
         return;
+    }
+    if (prop.sessionId === "" || !prop.sessionId) {
+        prop.setStatus("empty session id")
+        return
+        // throw ("empty session id")
     }
 
     prop.setLoading(true);
@@ -68,15 +73,10 @@ export const handleUpload = async (prop: Props) => {
         // Continue your analysis flow after uploads
         prop.setStatus("✅ Upload complete. Running analysis...");
 
-        // const payload = {
-        //     session_id: prop.sessionId,
-        // };
-        // await api.post("/analyze", payload);
-        analyzeResume(prop.sessionId)
-
-        prop.setStatus("✅ Analysis queud.");
     } catch (err: any) {
         prop.setStatus("❌ Upload failed: " + (err.message || "Unknown error"));
+        await api.delete(`/sessions/${prop.sessionId}`)
+        throw err;
     } finally {
         prop.setLoading(false);
     }

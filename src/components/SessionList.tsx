@@ -2,14 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Session } from "../types";
 import { getSessions } from "../api/sessions";
 // import { Eye } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+
+import { SessionCard } from "./SessionCard";
 
 // import { SessionCard } from "./SessionCard";
 
 export const SessionList = () => {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState(true);
-    const navigate = useNavigate()
+    const handleDeleteSession = (id: string) => {
+        setSessions(prev => prev.filter(s => s.id !== id));
+    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -60,57 +63,75 @@ export const SessionList = () => {
 
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
                 {sessions.map((session) => {
-                    const isCompleted = session.status === "completed";
+                    //         const session_status = useSessionUpdates(session)
 
+                    //         const isCompleted = session_status === "completed";
+
+                    //         return (
+                    //             <tr
+                    //                 onClick={() => {
+                    //                     navigate(`/session/${session.id}`)
+
+                    //                 }}
+                    //                 key={session.id}
+                    //                 className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                    //             >
+                    //                 <td className="px-6 py-4 font-medium">
+                    //                     {session.name}
+                    //                 </td>
+
+                    //                 <td className="px-6 py-4 text-slate-500">
+                    //                     {session.job_title}
+                    //                 </td>
+
+                    //                 <td className="px-6 py-4">
+                    //                     <span
+                    //                         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold
+                    //   ${isCompleted
+                    //                                 ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                    //                                 : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                    //                             }
+                    // `}
+                    //                     >
+                    //                         <span
+                    //                             className={`size-1.5 rounded-full ${isCompleted
+                    //                                 ? "bg-emerald-500"
+                    //                                 : "bg-blue-500 animate-pulse"
+                    //                                 }`}
+                    //                         ></span>
+                    //                         {isCompleted ? "Completed" : "Processing"}
+                    //                     </span>
+                    //                 </td>
+
+                    //                 <td className="px-6 py-4 text-slate-500">
+                    //                     {new Date(session.created_at).toLocaleDateString()}
+                    //                 </td>
+
+                    //                 <td className="px-6 py-4 text-right">
+                    //                     {/* <button className="p-1.5 text-slate-400 hover:text-primary transition-colors">
+                    //                         <span className="material-symbols-outlined text-xl">
+                    //                             <Eye className="size-5" />
+                    //                         </span>
+                    //                     </button> */}
+                    //                     <button
+                    //                         onClick={(e) => {
+                    //                             e.stopPropagation();
+                    //                             analyzeResume(session.id)
+
+                    //                         }}
+                    //                         className="flex items-center gap-1 text-gray-500 hover:text-blue-600 transition"
+                    //                         title="Rerun Analysis"
+                    //                     >
+                    //                         <RotateCcw className="w-4 h-4" />
+                    //                     </button>
+                    //                 </td>
+                    //             </tr>
+                    //         );
                     return (
-                        <tr
-                            onClick={() => {
-                                navigate(`/session/${session.id}`)
-
-                            }}
-                            key={session.id}
-                            className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
-                        >
-                            <td className="px-6 py-4 font-medium">
-                                {session.name}
-                            </td>
-
-                            <td className="px-6 py-4 text-slate-500">
-                                {session.job_title}
-                            </td>
-
-                            <td className="px-6 py-4">
-                                <span
-                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold
-              ${isCompleted
-                                            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-                                            : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-                                        }
-            `}
-                                >
-                                    <span
-                                        className={`size-1.5 rounded-full ${isCompleted
-                                            ? "bg-emerald-500"
-                                            : "bg-blue-500 animate-pulse"
-                                            }`}
-                                    ></span>
-                                    {isCompleted ? "Completed" : "Processing"}
-                                </span>
-                            </td>
-
-                            <td className="px-6 py-4 text-slate-500">
-                                {new Date(session.created_at).toLocaleDateString()}
-                            </td>
-                            {/* 
-                            <td className="px-6 py-4 text-right">
-                                <button className="p-1.5 text-slate-400 hover:text-primary transition-colors">
-                                    <span className="material-symbols-outlined text-xl">
-                                        <Eye className="size-5" />
-                                    </span>
-                                </button>
-                            </td> */}
-                        </tr>
-                    );
+                        <SessionCard
+                            session={session} key={session.id}
+                            onDeleteSuccess={handleDeleteSession} />// Pass the callback/>
+                    )
                 })}
             </tbody>
         </table>

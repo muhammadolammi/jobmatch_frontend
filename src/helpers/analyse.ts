@@ -1,7 +1,7 @@
 import { api } from "../api/client";
 
 
-export const analyzeResume = async (sessionId: string,) => {
+export const analyzeResume = async (sessionId: string, donemessage: string) => {
 
     try {
         const payload = {
@@ -9,8 +9,9 @@ export const analyzeResume = async (sessionId: string,) => {
         };
         await api.post("/analyze", payload);
         // const res = await api.post(`/sessions/${sessionId}/analyze`);
-        alert("Analysis re-queued successfully!");
+        alert(donemessage);
     } catch (err: any) {
+        console.log(err)
         // console.error(err); if (error.response && error.response.status === 429) {
         const remaining = err.response.data?.remaining_seconds;
         const message = err.response.data?.message || "Too many requests. Try again later.";

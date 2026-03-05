@@ -445,7 +445,7 @@ import { selectCurrentUser } from "../states/authslice";
 import { api } from "../api/client";
 import { getSession } from "../api/sessions";
 import { useSessionUpdates } from "../hooks/useSessionUpdates";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeftIcon, CheckCircle2, CheckCircle, AlertTriangle, AlertCircle, Lightbulb, Building2, ChevronDown } from "lucide-react";
 
 export default function SessionPage() {
     const { id: sessionId } = useParams<{ id: string }>();
@@ -455,6 +455,7 @@ export default function SessionPage() {
     const [loadingResults, setLoadingResults] = useState(false);
     const [error, setError] = useState<string>("");
     const [isGenerating, setIsGenerating] = useState<boolean>(false);
+    const [showFullDescription, setShowFullDescription] = useState(false);
 
     const user = useAppSelector(selectCurrentUser);
     const isHR = user?.role === "employer";
@@ -530,9 +531,9 @@ export default function SessionPage() {
     const isErrorResult = primaryResult?.is_error_result ?? false;
     const errorMessage = primaryResult?.error ?? "";
 
-    const radius = 42;
-    const circumference = 2 * Math.PI * radius;
-    const strokeOffset = circumference - (matchScore / 100) * circumference;
+    // const radius = 42;
+    // const circumference = 2 * Math.PI * radius;
+    // const strokeOffset = circumference - (matchScore / 100) * circumference;
 
     /* ---------------- HR MULTI RESULT VIEW ---------------- */
     const content = useMemo(() => {
@@ -576,124 +577,249 @@ export default function SessionPage() {
                 </div>
             </header>
 
-            <main className="max-w-7xl mx-auto px-4 py-8 grid lg:grid-cols-12 gap-8">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-                {/* LEFT CONTENT */}
-                <div className="lg:col-span-8 space-y-6">
+                    {/* LEFT CONTENT */}
+                    <div className="lg:col-span-8 space-y-6">
 
-                    {isErrorResult && (
-                        <div className="bg-red-50 text-red-700 p-3 rounded-md">
-                            {errorMessage || "Analysis failed for this candidate."}
-                        </div>
-                    )}
+                        {isErrorResult && (
+                            <div className="bg-red-50 text-red-700 p-3 rounded-md">
+                                {errorMessage || "Analysis failed for this candidate."}
+                            </div>
+                        )}
 
-                    {isGenerating && (
-                        <div className="bg-yellow-50 text-yellow-700 p-3 rounded-md">
-                            Generating analysis...
-                        </div>
-                    )}
+                        {isGenerating && (
+                            <div className="bg-yellow-50 text-yellow-700 p-3 rounded-md">
+                                Generating analysis...
+                            </div>
+                        )}
 
-                    {/* MATCH SCORE CARD */}
-                    <div className="bg-white dark:bg-slate-900 rounded-xl p-8 shadow-sm">
-                        <div className="flex flex-col md:flex-row items-center gap-8">
+                        {/* MATCH SCORE CARD */}
+                        {/* <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm">
+                            <div className="flex flex-col md:flex-row items-center gap-8">
 
-                            <div className="relative w-48 h-48">
-                                <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                                    <circle
-                                        cx="50"
-                                        cy="50"
-                                        r={radius}
-                                        stroke="currentColor"
-                                        strokeWidth="8"
-                                        fill="transparent"
-                                        className="text-slate-200"
-                                    />
-                                    <circle
-                                        cx="50"
-                                        cy="50"
-                                        r={radius}
-                                        stroke="currentColor"
-                                        strokeWidth="8"
-                                        fill="transparent"
-                                        strokeDasharray={circumference}
-                                        strokeDashoffset={strokeOffset}
-                                        strokeLinecap="round"
-                                        className="text-emerald-500"
-                                    />
-                                </svg>
+                                <div className="relative w-48 h-48">
+                                    <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                                        <circle
+                                            cx="50"
+                                            cy="50"
+                                            r={radius}
+                                            stroke="currentColor"
+                                            strokeWidth="8"
+                                            fill="transparent"
+                                            className="text-slate-200"
+                                        />
+                                        <circle
+                                            cx="50"
+                                            cy="50"
+                                            r={radius}
+                                            stroke="currentColor"
+                                            strokeWidth="8"
+                                            fill="transparent"
+                                            strokeDasharray={circumference}
+                                            strokeDashoffset={strokeOffset}
+                                            strokeLinecap="round"
+                                            className="text-emerald-500"
+                                        />
+                                    </svg>
 
-                                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                    <span className="text-5xl font-black">{matchScore}%</span>
-                                    <span className="text-sm text-emerald-600">Match Score</span>
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span className="text-5xl font-black">{matchScore}%</span>
+                                        <span className="text-sm text-emerald-600">Match Score</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h2 className="text-2xl font-bold mb-2">
+                                        {matchScore >= 75 ? "Excellent Fit!" :
+                                            matchScore >= 50 ? "Moderate Fit" :
+                                                "Needs Improvement"}
+                                    </h2>
+
+                                    <p className="text-slate-600">
+                                        {summary || "AI analysis based on resume and job description."}
+                                    </p>
                                 </div>
                             </div>
-
-                            <div>
-                                <h2 className="text-2xl font-bold mb-2">
-                                    {matchScore >= 75 ? "Excellent Fit!" :
-                                        matchScore >= 50 ? "Moderate Fit" :
-                                            "Needs Improvement"}
-                                </h2>
-
-                                <p className="text-slate-600">
-                                    {summary || "AI analysis based on resume and job description."}
-                                </p>
+                        </div> */}
+                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-8 shadow-sm">
+                            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                                <div className="relative w-48 h-48 flex items-center justify-center">
+                                    {/* <!-- Circular Progress SVG --> */}
+                                    <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                                        <circle className="text-slate-100 dark:text-slate-800" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" stroke-width="8"></circle>
+                                        <circle className="text-emerald-500" cx="50" cy="50" fill="transparent" r="42" stroke="currentColor" stroke-dasharray="263.89" stroke-dashoffset="39.58" stroke-linecap="round" stroke-width="8"></circle>
+                                    </svg>
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span className="text-5xl font-black text-primary dark:text-white">{matchScore}%</span>
+                                        <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">Match Score</span>
+                                    </div>
+                                </div>
+                                <div className="flex-1 text-center md:text-left">
+                                    <h2 className="text-2xl font-bold text-primary dark:text-white mb-2">
+                                        {matchScore >= 75 ? "Excellent Fit!" :
+                                            matchScore >= 50 ? "Moderate Fit" :
+                                                "Needs Improvement"}
+                                    </h2>
+                                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                                        {/* Your profile is a strong match for this role. You possess 92% of the required core technologies and exceed the experience level for Senior leadership. */}
+                                        {summary || "AI analysis based on resume and job description."}
+                                    </p>
+                                    {/* <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-2">
+                                        <span className="px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 text-xs font-bold rounded-full uppercase tracking-wide">High Relevance</span>
+                                        <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-bold rounded-full uppercase tracking-wide">Ready to Apply</span>
+                                    </div> */}
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* STRENGTHS & GAPS */}
-                    <div className="grid md:grid-cols-2 gap-6">
+                        {/* Analysis */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* <!-- Key Strengths --> */}
+                            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <span className="material-symbols-outlined text-emerald-500">
+                                        <CheckCircle />
+                                    </span>
+                                    <h3 className="font-bold text-primary dark:text-white">Key Strengths</h3>
+                                </div>
+                                <ul className="space-y-4">
+                                    {relevantSkills.map((skill, i) => (
+                                        <li key={`skill-${i}`} className="flex items-start gap-3">
+                                            <span className="material-symbols-outlined text-emerald-500 text-sm mt-1">
+                                                <CheckCircle2 className="text-sm size-3" />
+                                            </span>
+                                            <span className="text-sm text-slate-700 dark:text-slate-300">{skill}</span>
+                                        </li>
+                                    ))}
+                                    {relevantExperiences.map((exp, i) => (
+                                        <li key={`exp-${i}`} className="flex items-start gap-3">
+                                            <span className="material-symbols-outlined text-emerald-500 text-sm mt-1">
+                                                <CheckCircle2 className="text-sm size-3" />
 
-                        {/* Relevant Skills & Experience */}
-                        <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm">
-                            <h3 className="font-bold mb-4 text-emerald-600">Relevant Strengths</h3>
-                            <ul className="space-y-2">
-                                {relevantSkills.map((skill, i) => (
-                                    <li key={`skill-${i}`} className="text-sm">{skill}</li>
-                                ))}
-                                {relevantExperiences.map((exp, i) => (
-                                    <li key={`exp-${i}`} className="text-sm">{exp}</li>
-                                ))}
-                                {relevantSkills.length === 0 && relevantExperiences.length === 0 && (
-                                    <p className="text-sm text-slate-500">No strong matches identified.</p>
-                                )}
-                            </ul>
+                                            </span>
+                                            <span className="text-sm text-slate-700 dark:text-slate-300">{exp}</span>
+
+
+                                        </li>
+                                    ))}
+                                    {relevantSkills.length === 0 && relevantExperiences.length === 0 && (
+                                        <p className="text-sm text-slate-500">No strong matches identified.</p>
+                                    )}
+
+
+                                </ul>
+                            </div>
+                            {/* <!-- Missing Skills / Gaps --> */}
+                            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <span className="material-symbols-outlined text-amber-500">
+                                        <AlertTriangle />
+                                    </span>
+                                    <h3 className="font-bold text-primary dark:text-white">Missing Skills</h3>
+                                </div>
+                                <ul className="space-y-4">
+                                    {missingSkills.map((skill, i) => (
+
+                                        <li key={i} className="flex items-start gap-3">
+                                            <span className="material-symbols-outlined text-amber-500 text-sm mt-1">
+                                                <AlertCircle className="text-sm size-3" />
+                                            </span>
+                                            <span className="text-sm text-slate-700 dark:text-slate-300">{skill}</span>
+
+
+                                        </li>
+                                    ))}
+                                    {missingSkills.length === 0 && (
+                                        <p className="text-sm text-slate-500">No major skill gaps detected.</p>
+                                    )}
+
+
+                                </ul>
+                            </div>
                         </div>
 
-                        {/* Missing Skills */}
-                        <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm">
-                            <h3 className="font-bold mb-4 text-amber-600">Missing Skills</h3>
-                            <ul className="space-y-2">
-                                {missingSkills.map((skill, i) => (
-                                    <li key={i} className="text-sm">{skill}</li>
-                                ))}
-                                {missingSkills.length === 0 && (
-                                    <p className="text-sm text-slate-500">No major skill gaps detected.</p>
-                                )}
-                            </ul>
+
+                        {/* RECOMMENDATION */}
+                        <div className="bg-primary text-white rounded-xl p-8 shadow-lg overflow-hidden relative">
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <Lightbulb className="material-symbols-outlined text-blue-300" />
+                                    <h3 className="text-lg font-bold">Recommendation</h3>
+                                </div>
+                                <div className="bg-primary text-white rounded-xl p-8">
+                                    <p className="text-sm leading-relaxed">
+                                        {recommendation || "No recommendation available."}
+                                    </p>
+                                    {/* <p className="text-xs text-slate-300 leading-relaxed">Be prepared to discuss your approach to scalable frontend architecture, as this is a high-priority requirement.</p> */}
+                                </div>
+                            </div>
                         </div>
+
                     </div>
 
-                    {/* RECOMMENDATION */}
-                    <div className="bg-primary text-white rounded-xl p-8">
-                        <h3 className="font-bold mb-4">Recommendation</h3>
-                        <p className="text-sm leading-relaxed">
-                            {recommendation || "No recommendation available."}
-                        </p>
-                    </div>
+                    {/* SIDEBAR */}
+                    <aside className="lg:col-span-4 space-y-6">
+                        <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 shadow-sm">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                                    <span className="material-symbols-outlined text-primary dark:text-slate-400">
+                                        <Building2 />
+
+                                    </span>
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-primary dark:text-white leading-tight">{session.job_title}</h3>
+                                    {/* <p className="text-sm text-slate-500">San Francisco, CA (Remote)</p> */}
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <div>
+                                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Job Description</h4>
+                                    <p className={`text-sm text-slate-600 dark:text-slate-400 leading-relaxed ${showFullDescription ? "" : "line-clamp-6"
+                                        }`}>
+                                        {session.job_description}                                    </p>
+                                    {/* <button className="mt-2 text-primary dark:text-blue-400 text-xs font-bold hover:underline flex items-center gap-1"> */}
+                                    {/* View Full Description <span className="material-symbols-outlined text-xs">
+                                            <ExternalLink />
+                                        </span>
+                                    </button> */}
+                                    <button
+                                        onClick={() => setShowFullDescription(!showFullDescription)}
+                                        className="mt-2 text-primary dark:text-blue-400 text-xs font-bold hover:underline flex items-center gap-1"
+                                    >
+                                        {showFullDescription ? "Collapse Description" : "View Full Description"}
+
+                                        <ChevronDown
+                                            className={`w-4 h-4 transition-transform duration-300 ${showFullDescription ? "rotate-180" : ""
+                                                }`}
+                                        />
+                                    </button>
+
+                                </div>
+                                {/* <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-3">
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-slate-500">Salary Range</span>
+                                        <span className="font-semibold text-primary dark:text-slate-200">$160k - $210k</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-slate-500">Experience</span>
+                                        <span className="font-semibold text-primary dark:text-slate-200">5+ Years</span>
+                                    </div>
+                                </div> */}
+                            </div>
+                        </div>
+                        {/* <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm">
+                            <h3 className="font-bold mb-2">{session.job_title}</h3>
+                            <p className="text-sm text-slate-600">
+                                {session.job_description}
+                            </p>
+                        </div> */}
+                    </aside>
                 </div>
 
-                {/* SIDEBAR */}
-                <aside className="lg:col-span-4 space-y-6">
-                    <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm">
-                        <h3 className="font-bold mb-2">{session.job_title}</h3>
-                        <p className="text-sm text-slate-600">
-                            {session.job_description}
-                        </p>
-                    </div>
-                </aside>
-            </main>
-        </div>
+            </main >
+        </div >
     );
 }

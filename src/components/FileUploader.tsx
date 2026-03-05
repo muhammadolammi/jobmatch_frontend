@@ -19,7 +19,7 @@ export const FileUploader: React.FC<Props> = ({
     const handleRerun = async () => {
         try {
             setRerunning(true);
-            await analyzeResume(sessionId);
+            await analyzeResume(sessionId, "Analysis re-queued successfully!");
             setStatus("✅ Analysis re-queued successfully!");
         } catch (err: any) {
             const remaining = err.response.data?.remaining_seconds;

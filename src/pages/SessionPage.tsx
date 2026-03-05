@@ -496,6 +496,7 @@ export default function SessionPage() {
             setLoadingResults(true);
             try {
                 const resp = await api.get(`/results/${sessionId}`);
+                console.log(resp)
                 if (mounted) handleResult(resp.data?.results ?? []);
             } catch {
                 if (mounted) setError("Failed to load analysis results.");

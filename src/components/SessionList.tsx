@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Session } from "../types";
 import { getSessions } from "../api/sessions";
-import { SessionCard } from "./SessionCard";
+import { Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+// import { SessionCard } from "./SessionCard";
 
 export const SessionList = () => {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -26,16 +29,83 @@ export const SessionList = () => {
 
     if (!sessions.length)
         return (
-            <p className="text-gray-500 text-center">
+            <p className="p-10 text-gray-500 text-center">
                 No previous sessions found. Create one to get started!
             </p>
         );
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            {sessions.map((session) => (
-                <SessionCard key={session.id} session={session} />
-            ))}
-        </div>
+        // <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        //     {sessions.map((session) => (
+        //         <SessionCard key={session.id} session={session} />
+        //     ))}
+        // </div>
+        <table className="w-full text-left">
+            <thead>
+                <tr className="text-[10px] uppercase tracking-wider text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                    <th className="px-6 py-4 font-bold">Session Name</th>
+                    <th className="px-6 py-4 font-bold">Job Title</th>
+                    <th className="px-6 py-4 font-bold">Status</th>
+                    <th className="px-6 py-4 font-bold">Date Created</th>
+                    <th className="px-6 py-4 font-bold text-right">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
+                {sessions.map((session) => {
+                    const isCompleted = session.status === "completed";
+
+                    return (
+                        <tr
+                            onClick={() => {
+                                navigate(`/session/${session.id}`)
+
+                            }}
+                            key={session.id}
+                            className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                        >
+                            <td className="px-6 py-4 font-medium">
+                                {session.name}
+                            </td>
+
+                            <td className="px-6 py-4 text-slate-500">
+                                {session.job_title}
+                            </td>
+
+                            <td className="px-6 py-4">
+                                <span
+                                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold
+              ${isCompleted
+                                            ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
+                                            : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+                                        }
+            `}
+                                >
+                                    <span
+                                        className={`size-1.5 rounded-full ${isCompleted
+                                            ? "bg-emerald-500"
+                                            : "bg-blue-500 animate-pulse"
+                                            }`}
+                                    ></span>
+                                    {isCompleted ? "Completed" : "Processing"}
+                                </span>
+                            </td>
+
+                            <td className="px-6 py-4 text-slate-500">
+                                {new Date(session.created_at).toLocaleDateString()}
+                            </td>
+
+                            <td className="px-6 py-4 text-right">
+                                <button className="p-1.5 text-slate-400 hover:text-primary transition-colors">
+                                    <span className="material-symbols-outlined text-xl">
+                                        <Eye className="size-5" />
+                                    </span>
+                                </button>
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        </table>
     );
 };

@@ -8,7 +8,7 @@ export default function F404Page() {
     const location = useLocation();
     const currentPath = location.pathname.replace("/", "");
 
-    const commingSoonPages = ["help-center", "privacy-policy", "resume-tips", "hiring-blog", "career-advice", "cookie-policy", "terms-of-service"]
+    const commingSoonPages = ["help-center", "privacy-policy", "resume-tips", "hiring-blog", "career-advice", "cookie-policy", "terms-of-service", "features"]
     const isComingSoon = commingSoonPages.includes(currentPath)
     const navigate = useNavigate()
 

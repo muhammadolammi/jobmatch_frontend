@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Session } from "../types";
 import { getSessions } from "../api/sessions";
-import { Eye } from "lucide-react";
+// import { Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 // import { SessionCard } from "./SessionCard";
 
@@ -47,7 +47,7 @@ export const SessionList = () => {
                     <th className="px-6 py-4 font-bold">Job Title</th>
                     <th className="px-6 py-4 font-bold">Status</th>
                     <th className="px-6 py-4 font-bold">Date Created</th>
-                    <th className="px-6 py-4 font-bold text-right">Actions</th>
+                    {/* <th className="px-6 py-4 font-bold text-right">Actions</th> */}
                 </tr>
             </thead>
 
@@ -94,14 +94,14 @@ export const SessionList = () => {
                             <td className="px-6 py-4 text-slate-500">
                                 {new Date(session.created_at).toLocaleDateString()}
                             </td>
-
+                            {/* 
                             <td className="px-6 py-4 text-right">
                                 <button className="p-1.5 text-slate-400 hover:text-primary transition-colors">
                                     <span className="material-symbols-outlined text-xl">
                                         <Eye className="size-5" />
                                     </span>
                                 </button>
-                            </td>
+                            </td> */}
                         </tr>
                     );
                 })}

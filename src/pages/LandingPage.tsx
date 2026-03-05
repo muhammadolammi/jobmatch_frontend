@@ -39,15 +39,16 @@ export default function LandingPage() {
                       View Pricing
                     </Link>
                   </div>
+                  {/* 
                   <div className="flex items-center gap-4 text-sm text-slate-500">
                     <div className="flex -space-x-2">
                       <div className="h-8 w-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center overflow-hidden"><img alt="Avatar" data-alt="Portrait of a young professional woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTKU8ONWRioJGXlLn4iaKs6-Dcvg6xzXChx3UIY6HR6UF9P288k5EsQFJGFN6e-srpJzgZD9oJyEVuROVFEUfvw8dNJdFsN8BiaVHYE-2E8hBc4J6jqUjiyqB7c8zI1skkAbdp7VOmPyeM9w8z8X4iJfSjEIn-N3oowEjAa4wYAvPqsQa3L4jUKjbENj7YAtmKoeioy1o6NDFMpzCJW4LzJ2INZauDtQ0yJrTNLWUiHRzS3aRB1eCIm0yYdq1zyE-b0VzzslFVgw6Q" /></div>
                       <div className="h-8 w-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center overflow-hidden"><img alt="Avatar" data-alt="Portrait of a business executive man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5wpxIaSnXyk3cAsWTnOb4DLKbNKASoe4_NMmdwlrKxc2V7_v0gVTfsZ29MAC6VxBada9o66g_aWlViotUn4VaHRXQbw3ZmdAptZXTN0Jgc2EksJgvj7cmgq_oZ2UbWP_YGpZdkt0K68Km9RFW7esuGCNFZCVlawZ6wWnx0DInuMUvbXj87BmKaOetbqhlFuNtSrPySZWdU5LXAvxetknCynoHza89h1FXoeYQ3v2lW5D1_n-ljl6nDrX1BMWcT4jv5TxvpCp5HE_O" /></div>
                       <div className="h-8 w-8 rounded-full border-2 border-white bg-slate-200 flex items-center justify-center overflow-hidden"><img alt="Avatar" data-alt="Close up of a smiling professional woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAc3wGp9V_pevzDFQvJ93iozbuD0foPWN0NZgFrPSfOPUAs34uWffYN-r_x0vJvf_wV_g3fWenR16v9R0sCfPO1A6pb1emdS9AeAL1tUb-oEWUuVrXLlS0YRAkBHbkeLWG88OXVMitEDnghQo9u7nsITUHhhLAedeav-i1hDuwPDAZPLsxkKBPyuTCMS5HekAwT8QxW-F2zz58hHREkdB8XXpujdcu27V0N7QeWnoeqsxOaPPa7defTgSjWvXgcqugK3SKpghDLfYn8" /></div>
                     </div>
-                    {/* TODO GET THIS NUMBER FROM BACKEND  */}
+                    TODO GET THIS NUMBER FROM BACKEND 
                     <span>Joined by 10 professionals this month</span>
-                  </div>
+                  </div> */}
 
                 </div>
                 <div className="relative group">
